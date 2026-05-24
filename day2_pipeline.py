@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore")
 # Update these if you used different values during setup
 PG_CONFIG = {
     "host":     "localhost",
-    "port":     5432,
+    "port":     5433,
     "database": "sts_planning",
     "user":     "sts_planner",
     "password": "planning2024",
@@ -458,3 +458,5 @@ print(f"""
 
   → Run day3_forecast.py next to build demand forecasts.
 """)
+
+
