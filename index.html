@@ -286,12 +286,9 @@
 <div id="page-howitworks" class="page">
   <p class="section-title">How It Works — Live Data Flow</p>
   <p style="color:var(--muted);font-size:13px;margin-bottom:24px">Watch how data moves from raw Excel files all the way to your planning dashboard — automatically.</p>
-
   <div class="chart-card" style="padding:32px 24px;overflow-x:auto">
     <canvas id="flowCanvas" style="display:block;width:100%;max-width:1200px;margin:0 auto"></canvas>
   </div>
-
-  <!-- Click-to-learn detail panel -->
   <div id="flow-detail" class="chart-card" style="margin-top:20px;display:none;border-left:3px solid var(--accent2)">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div>
@@ -301,7 +298,6 @@
       <div onclick="document.getElementById('flow-detail').style.display='none'" style="cursor:pointer;color:var(--muted);font-size:18px;margin-left:20px;flex-shrink:0">✕</div>
     </div>
   </div>
-
   <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:16px">Click any node to learn more</p>
 </div>
 
@@ -346,11 +342,9 @@
     </div>
     <div class="about-card">
       <h3>💡 Why AI Alone Can't Do This</h3>
-      <p>The CEO concern: <em>"AI will just consolidate the Excel files."</em></p>
+      <p>Your concern: <em>"AI will just consolidate the Excel files."</em></p>
       <br>
-      <p>The reality: AI needs clean, structured, consistent data to be useful. Without someone to standardise column names across regions, resolve currency differences, fix broken categories, and define what "inventory risk" means for this business — AI produces garbage.</p>
-      <br>
-      <p>This role builds the foundation that makes AI useful. Without it, the AI investment fails.</p>
+      <p>My answer: AI needs clean, structured, consistent data to be useful. Without someone to standardise column names across regions, resolve currency differences, fix broken categories, and define what "inventory risk" means for this business — AI produces garbage.</p>
     </div>
   </div>
 </div>
@@ -539,18 +533,16 @@ function filterTable() {
   renderTable(filtered);
 }
 
-// ── How It Works — Animated Canvas Flowchart ────────────────────────────────
 
+// ── How It Works — Animated Flowchart ─────────────────────────────────────
 let howInitialised = false;
 
 function initFlowChart() {
   const canvas = document.getElementById('flowCanvas');
   if (!canvas) return;
-
-  // ── Layout constants ──────────────────────────────────────────────────────
-  const DPR  = window.devicePixelRatio || 1;
-  const W    = Math.min(canvas.parentElement.offsetWidth - 48, 1200);
-  const H    = 480;
+  const DPR = window.devicePixelRatio || 1;
+  const W   = Math.min(canvas.parentElement.offsetWidth - 48, 1200);
+  const H   = 480;
   canvas.width  = W * DPR;
   canvas.height = H * DPR;
   canvas.style.width  = W + 'px';
@@ -558,202 +550,157 @@ function initFlowChart() {
   const ctx = canvas.getContext('2d');
   ctx.scale(DPR, DPR);
 
-  // ── Detect dark mode ──────────────────────────────────────────────────────
-  const dark = document.body.style.background.includes('0f') ||
-               window.matchMedia('(prefers-color-scheme: dark)').matches ||
-               true; // dashboard is always dark
-  const BG       = '#1a1d27';
-  const BORDER   = '#2e3348';
-  const TEXT1    = '#e8eaf0';
-  const TEXT2    = '#7c82a0';
-  const PULSE    = '#00c9a7';
-  const PULSE2   = '#4f7fff';
+  const BG = '#1a1d27', BORDER = '#2e3348', TEXT2 = '#7c82a0';
 
-  // ── Node definitions ─────────────────────────────────────────────────────
-  // Each node: { id, label, sub, x, y, w, h, color, border, info }
   const col = {
-    file:   { fill:'#0d2035', stroke:'#185FA5', text:'#85B7EB' },
-    pipe:   { fill:'#1d1a08', stroke:'#854F0B', text:'#EF9F27' },
-    db:     { fill:'#120d2e', stroke:'#534AB7', text:'#AFA9EC' },
-    fcast:  { fill:'#051f18', stroke:'#0F6E56', text:'#5DCAA5' },
-    risk:   { fill:'#1f0d0d', stroke:'#993C1D', text:'#F0997B' },
-    dash:   { fill:'#0d1f1a', stroke:'#0F6E56', text:'#00c9a7'  },
+    file:  { fill:'#0d2035', stroke:'#185FA5', text:'#85B7EB' },
+    pipe:  { fill:'#1d1a08', stroke:'#854F0B', text:'#EF9F27' },
+    db:    { fill:'#120d2e', stroke:'#534AB7', text:'#AFA9EC' },
+    fcast: { fill:'#051f18', stroke:'#0F6E56', text:'#5DCAA5' },
+    risk:  { fill:'#1f0d0d', stroke:'#993C1D', text:'#F0997B' },
+    dash:  { fill:'#0d1f1a', stroke:'#0F6E56', text:'#00c9a7' },
   };
 
   const NW = 130, NH = 64;
   const NODES = [
-    // Column 1 — Raw files
-    { id:'au',    label:'🇦🇺 Australia',  sub:'Sales_Planning.xlsx',  x:20,  y:80,  w:NW, h:NH, col:col.file,
-      info:{title:'Australia Excel File', body:'Raw sales data from the AU team. Different column names (SKU_Code, RRP, Revenue_AUD), AUD currency, and messy data including duplicates and missing values.'} },
-    { id:'eu',    label:'🇪🇺 Europe',      sub:'Demand_Report.xlsx',    x:20,  y:200, w:NW, h:NH, col:col.file,
-      info:{title:'Europe Excel File', body:'EU planning file with completely different column names (Item_Number, Price_EUR), DD/MM/YYYY date format, EUR currency. Planners had no idea AU and EU were inconsistent.'} },
-    { id:'us',    label:'🇺🇸 USA',         sub:'Sales_Data.xlsx',       x:20,  y:320, w:NW, h:NH, col:col.file,
-      info:{title:'USA Excel File', body:'US data with yet another naming convention (product_id, list_price_usd), includes discount columns not present in other regions. USD currency.'} },
-
-    // Column 2 — Pipeline
-    { id:'pipe',  label:'Python Pipeline', sub:'Clean · Merge · Validate', x:210, y:195, w:NW+20, h:NH+10, col:col.pipe,
-      info:{title:'Automated Data Pipeline', body:'Python reads all 3 files and standardises everything: renames columns, converts dates to ISO format, normalises currencies to USD, removes 30 duplicate rows, fills 54 missing values using seasonal medians, and fixes broken category labels like TBC and UNKNOWN.'} },
-
-    // Column 3 — Database
-    { id:'db',    label:'PostgreSQL',      sub:'Single source of truth',  x:420, y:195, w:NW+10, h:NH+10, col:col.db,
-      info:{title:'PostgreSQL Planning Database', body:'One trusted database replaces 3 disconnected spreadsheets. Contains 1,080 clean rows across all regions. Four views created automatically: sales_planning, monthly_summary, inventory_risk_snapshot, regional_performance. Power BI, Python, and Excel can all connect simultaneously.'} },
-
-    // Column 4 — Forecast + Risk (stacked)
-    { id:'fcast', label:'Demand Forecast', sub:'6-month · Holt-Winters',  x:610, y:130, w:NW+10, h:NH, col:col.fcast,
-      info:{title:'6-Month Demand Forecast', body:'Holt-Winters Exponential Smoothing model trained on 24 months of history per SKU per region (45 combinations). Captures seasonal patterns — outdoor gear peaks in summer. Produces 270 forecast data points with ±80% confidence band.'} },
-    { id:'risk',  label:'Inventory Risk',  sub:'Coverage · Flags · Actions', x:610, y:280, w:NW+10, h:NH, col:col.risk,
-      info:{title:'Inventory Risk Engine', body:'Calculates coverage months = current stock ÷ forecast monthly demand. Flags each SKU-region as Critical (<1 month), High (1–2 months), Healthy (3–9 months), or Overstock (9+ months). Produces prioritised action list — 4 Critical, 4 High, 4 Overstock found.'} },
-
-    // Column 5 — Dashboard
-    { id:'dash',  label:'Planning Hub',    sub:'Live dashboard · GitHub Pages', x:800, y:195, w:NW+20, h:NH+10, col:col.dash,
-      info:{title:'This Planning Dashboard', body:'All outputs in one self-contained HTML file. Four tabs: Overview (KPIs + trends), Demand Forecast (interactive by SKU and region), Inventory Risk (filterable action table), How It Works (this flowchart). Hosted free on GitHub Pages — anyone with the link can open it, including on mobile.'} },
+    { id:'au',    label:'AU Excel',         sub:'Sales_Planning.xlsx',      x:20,  y:80,  w:NW,    h:NH,    col:col.file,
+      info:{ title:'Australia Excel File', body:'Raw AU sales data with column names like SKU_Code, RRP, Revenue_AUD. AUD currency, messy data including duplicates and missing values.' }},
+    { id:'eu',    label:'EU Excel',          sub:'Demand_Report.xlsx',       x:20,  y:200, w:NW,    h:NH,    col:col.file,
+      info:{ title:'Europe Excel File', body:'EU file with completely different column names: Item_Number, Price_EUR, Net_Sales_EUR. DD/MM/YYYY date format. EUR currency. Totally inconsistent with AU.' }},
+    { id:'us',    label:'USA Excel',         sub:'Sales_Data.xlsx',          x:20,  y:320, w:NW,    h:NH,    col:col.file,
+      info:{ title:'USA Excel File', body:'US data with yet another naming style: product_id, list_price_usd, net_revenue_usd. Includes extra discount columns not in other regions.' }},
+    { id:'pipe',  label:'Python Pipeline',  sub:'Clean · Merge · Validate', x:205, y:190, w:NW+25, h:NH+15, col:col.pipe,
+      info:{ title:'Automated Data Pipeline', body:'Python reads all 3 files, standardises column names, converts dates to ISO format, normalises currencies to USD, removes 30 duplicate rows, fills 54 missing values using seasonal medians, and fixes broken category labels like TBC and UNKNOWN. Runs automatically when new files arrive.' }},
+    { id:'db',    label:'PostgreSQL',        sub:'Single source of truth',   x:410, y:190, w:NW+15, h:NH+15, col:col.db,
+      info:{ title:'PostgreSQL Planning Database', body:'One trusted database replaces 3 disconnected spreadsheets. 1,080 clean rows across all regions. Four views created automatically: sales_planning, monthly_summary, inventory_risk_snapshot, regional_performance. Power BI, Python, and Excel can all connect simultaneously.' }},
+    { id:'fcast', label:'Demand Forecast',  sub:'6-month · Holt-Winters',   x:600, y:120, w:NW+15, h:NH,    col:col.fcast,
+      info:{ title:'6-Month Demand Forecast', body:'Holt-Winters Exponential Smoothing trained on 24 months of history per SKU per region — 45 combinations total. Captures seasonal patterns. Produces 270 forecast data points with 80% confidence band.' }},
+    { id:'risk',  label:'Inventory Risk',   sub:'Coverage · Flags · Actions',x:600, y:275, w:NW+15, h:NH,    col:col.risk,
+      info:{ title:'Inventory Risk Engine', body:'Calculates coverage months = current stock ÷ forecast monthly demand. Flags each SKU-region: Critical (<1 month), High (1-2 months), Healthy (3-9 months), Overstock (9+ months). Result: 4 Critical, 4 High, 4 Overstock SKU-regions identified.' }},
+    { id:'dash',  label:'Planning Hub',     sub:'Dashboard · GitHub Pages',  x:800, y:190, w:NW+25, h:NH+15, col:col.dash,
+      info:{ title:'This Planning Dashboard', body:'All outputs in one self-contained HTML file. Four tabs: Overview (KPIs + trends), Demand Forecast (interactive by SKU and region), Inventory Risk (filterable action table), How It Works (this animated flowchart). Hosted free on GitHub Pages — shareable link, works on mobile.' }},
   ];
 
-  // ── Edge definitions ──────────────────────────────────────────────────────
-  // Each edge: from node id to node id, with optional waypoints
   const EDGES = [
-    { from:'au',    to:'pipe'  },
-    { from:'eu',    to:'pipe'  },
-    { from:'us',    to:'pipe'  },
-    { from:'pipe',  to:'db'    },
-    { from:'db',    to:'fcast' },
-    { from:'db',    to:'risk'  },
-    { from:'fcast', to:'dash'  },
-    { from:'risk',  to:'dash'  },
+    { from:'au',   to:'pipe', color:'#185FA5' },
+    { from:'eu',   to:'pipe', color:'#534AB7' },
+    { from:'us',   to:'pipe', color:'#993C1D' },
+    { from:'pipe', to:'db',   color:'#EF9F27' },
+    { from:'db',   to:'fcast',color:'#00c9a7' },
+    { from:'db',   to:'risk', color:'#00c9a7' },
+    { from:'fcast',to:'dash', color:'#4f7fff' },
+    { from:'risk', to:'dash', color:'#4f7fff' },
   ];
 
-  // Build node lookup
   const nodeMap = {};
   NODES.forEach(n => nodeMap[n.id] = n);
 
-  // ── Compute edge paths ────────────────────────────────────────────────────
-  function nodeRight(n)  { return { x: n.x + n.w, y: n.y + n.h/2 }; }
-  function nodeLeft(n)   { return { x: n.x,        y: n.y + n.h/2 }; }
-  function nodeTop(n)    { return { x: n.x + n.w/2,y: n.y         }; }
-  function nodeBottom(n) { return { x: n.x + n.w/2,y: n.y + n.h   }; }
-
-  function edgePath(e) {
+  function getEdgePath(e) {
     const a = nodeMap[e.from], b = nodeMap[e.to];
-    const start = nodeRight(a), end = nodeLeft(b);
-    const mx = (start.x + end.x) / 2;
-    return { sx:start.x, sy:start.y, ex:end.x, ey:end.y, mx };
+    const sx = a.x + a.w, sy = a.y + a.h / 2;
+    const ex = b.x,        ey = b.y + b.h / 2;
+    const mx = (sx + ex) / 2;
+    return { sx, sy, ex, ey, mx };
   }
 
-  // ── Pulse particles ───────────────────────────────────────────────────────
-  const particles = [];
-  const EDGE_COLORS = ['#00c9a7','#4f7fff','#00c9a7','#4f7fff','#00c9a7','#EF9F27','#00c9a7','#EF9F27'];
+  const edgePaths = EDGES.map(e => getEdgePath(e));
 
+  // Particles — 2 per edge, staggered
+  const particles = [];
   EDGES.forEach((e, i) => {
-    // Stagger initial positions so pulses look continuous
     for (let k = 0; k < 2; k++) {
       particles.push({
-        edge: i,
-        t: (k * 0.5 + i * 0.13) % 1,
-        speed: 0.004 + Math.random() * 0.002,
-        color: EDGE_COLORS[i],
-        size: 5 + Math.random() * 3,
+        ei: i,
+        t: (k * 0.5 + i * 0.11) % 1,
+        speed: 0.0035 + Math.random() * 0.002,
+        color: e.color,
+        r: 4 + Math.random() * 2,
       });
     }
   });
 
-  // ── Draw helpers ──────────────────────────────────────────────────────────
-  function roundRect(ctx, x, y, w, h, r, fill, stroke) {
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-    ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-    ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-    ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y);
-    ctx.closePath();
-    if (fill)   { ctx.fillStyle = fill;   ctx.fill(); }
-    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.2; ctx.stroke(); }
+  function ptOnPath(ep, t) {
+    const u = 1 - t;
+    return {
+      x: u*u*u*ep.sx + 3*u*u*t*ep.mx + 3*u*t*t*ep.mx + t*t*t*ep.ex,
+      y: u*u*u*ep.sy + 3*u*u*t*ep.sy + 3*u*t*t*ep.ey + t*t*t*ep.ey,
+    };
   }
 
-  function drawArrow(ctx, ex, ey, color) {
+  function rrect(x, y, w, h, r, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+    if (fill)   { ctx.fillStyle=fill;   ctx.fill(); }
+    if (stroke) { ctx.strokeStyle=stroke; ctx.lineWidth=1.2; ctx.stroke(); }
+  }
+
+  function arrowHead(ex, ey, color) {
     const s = 7;
     ctx.beginPath();
     ctx.moveTo(ex, ey);
-    ctx.lineTo(ex - s, ey - s*0.5);
-    ctx.lineTo(ex - s, ey + s*0.5);
+    ctx.lineTo(ex-s, ey-s*0.5);
+    ctx.lineTo(ex-s, ey+s*0.5);
     ctx.closePath();
     ctx.fillStyle = color;
     ctx.fill();
   }
 
-  function pointOnEdge(ep, t) {
-    // Bezier cubic: control points at mx
-    const { sx, sy, ex, ey, mx } = ep;
-    const u = 1 - t;
-    const x = u*u*u*sx + 3*u*u*t*mx + 3*u*t*t*mx + t*t*t*ex;
-    const y = u*u*u*sy + 3*u*u*t*sy + 3*u*t*t*ey + t*t*t*ey;
-    return { x, y };
-  }
-
-  // ── Hit test ─────────────────────────────────────────────────────────────
-  canvas.addEventListener('click', function(e) {
-    const rect = canvas.getBoundingClientRect();
-    const mx = (e.clientX - rect.left);
-    const my = (e.clientY - rect.top);
+  // Click handler
+  canvas.style.cursor = 'default';
+  canvas.onclick = function(e) {
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
     for (const n of NODES) {
       if (mx >= n.x && mx <= n.x+n.w && my >= n.y && my <= n.y+n.h) {
-        const panel = document.getElementById('flow-detail');
         document.getElementById('fd-title').textContent = n.info.title;
         document.getElementById('fd-body').textContent  = n.info.body;
+        const panel = document.getElementById('flow-detail');
         panel.style.display = 'block';
         panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
         return;
       }
     }
-  });
-
-  canvas.style.cursor = 'default';
-  canvas.addEventListener('mousemove', function(e) {
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  };
+  canvas.onmousemove = function(e) {
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
     canvas.style.cursor = NODES.some(n => mx>=n.x && mx<=n.x+n.w && my>=n.y && my<=n.y+n.h) ? 'pointer' : 'default';
-  });
+  };
 
-  // ── Main render loop ──────────────────────────────────────────────────────
-  const edgePaths = EDGES.map(e => edgePath(e));
-
-  // Layer labels above diagram
   const LAYER_LABELS = [
-    { label:'Raw Excel Files', x:20  + NW/2,         color:'#185FA5' },
-    { label:'Python Pipeline', x:210 + (NW+20)/2,    color:'#854F0B' },
-    { label:'PostgreSQL DB',   x:420 + (NW+10)/2,    color:'#534AB7' },
-    { label:'Analytics',       x:610 + (NW+10)/2,    color:'#0F6E56' },
-    { label:'Dashboard',       x:800 + (NW+20)/2,    color:'#0F6E56' },
+    { label:'RAW EXCEL FILES', cx: 20 + NW/2,           color:'#185FA5' },
+    { label:'PYTHON PIPELINE', cx: 205 + (NW+25)/2,     color:'#854F0B' },
+    { label:'POSTGRESQL DB',   cx: 410 + (NW+15)/2,     color:'#534AB7' },
+    { label:'ANALYTICS',       cx: 600 + (NW+15)/2,     color:'#0F6E56' },
+    { label:'DASHBOARD',       cx: 800 + (NW+25)/2,     color:'#0F6E56' },
   ];
 
-  function draw(ts) {
-    ctx.clearRect(0, 0, W, H);
+  const COL_BG = [
+    { x:12,  w:NW+8,    color:'rgba(24,95,165,0.05)'  },
+    { x:198, w:NW+40,   color:'rgba(133,79,11,0.05)'  },
+    { x:403, w:NW+30,   color:'rgba(83,74,183,0.05)'  },
+    { x:593, w:NW+30,   color:'rgba(15,110,86,0.05)'  },
+    { x:793, w:NW+40,   color:'rgba(15,110,86,0.05)'  },
+  ];
 
-    // Background
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, W, H);
 
-    // Layer column backgrounds
-    const colBgs = [
-      { x:10,  w:NW+10,    color:'rgba(24,95,165,0.04)' },
-      { x:205, w:NW+30,    color:'rgba(133,79,11,0.04)' },
-      { x:415, w:NW+20,    color:'rgba(83,74,183,0.04)' },
-      { x:605, w:NW+20,    color:'rgba(15,110,86,0.04)' },
-      { x:795, w:NW+35,    color:'rgba(15,110,86,0.04)' },
-    ];
-    colBgs.forEach(c => {
-      ctx.fillStyle = c.color;
-      roundRect(ctx, c.x, 40, c.w, H-55, 10, c.color, null);
-    });
+    // Column background zones
+    COL_BG.forEach(b => { rrect(b.x, 44, b.w, H-58, 10, b.color, null); });
 
-    // Layer labels
-    ctx.font = '500 11px Inter, system-ui, sans-serif';
+    // Column labels
     ctx.textAlign = 'center';
-    LAYER_LABELS.forEach(l => {
-      ctx.fillStyle = l.color;
-      ctx.fillText(l.label.toUpperCase(), l.x, 28);
-    });
+    ctx.font = '500 10px Inter, system-ui, sans-serif';
+    LAYER_LABELS.forEach(l => { ctx.fillStyle = l.color; ctx.fillText(l.label, l.cx, 30); });
 
-    // Edges (static path)
+    // Static edge lines
     edgePaths.forEach((ep, i) => {
       ctx.beginPath();
       ctx.moveTo(ep.sx, ep.sy);
@@ -762,47 +709,39 @@ function initFlowChart() {
       ctx.lineWidth = 1.5;
       ctx.setLineDash([]);
       ctx.stroke();
-      drawArrow(ctx, ep.ex, ep.ey, BORDER);
+      arrowHead(ep.ex, ep.ey, BORDER);
     });
 
-    // Animated pulse particles
+    // Animated particles
     particles.forEach(p => {
-      p.t += p.speed;
-      if (p.t > 1) p.t -= 1;
-
-      const ep = edgePaths[p.edge];
-      const pos = pointOnEdge(ep, p.t);
-
-      // Glow trail (3 circles, fading)
-      for (let i = 3; i >= 0; i--) {
-        const trailT = Math.max(0, p.t - i * 0.018);
-        const tpos = pointOnEdge(ep, trailT);
-        const alpha = (1 - i/4) * 0.35;
+      p.t = (p.t + p.speed) % 1;
+      const ep = edgePaths[p.ei];
+      // Draw trailing glow
+      for (let i = 4; i >= 0; i--) {
+        const trailT = ((p.t - i * 0.02) + 1) % 1;
+        const pos = ptOnPath(ep, trailT);
+        const alpha = (1 - i/5) * 0.4;
+        const hex = Math.round(alpha * 255).toString(16).padStart(2,'0');
         ctx.beginPath();
-        ctx.arc(tpos.x, tpos.y, p.size * 0.7, 0, Math.PI*2);
-        ctx.fillStyle = p.color + Math.round(alpha * 255).toString(16).padStart(2,'0');
+        ctx.arc(pos.x, pos.y, p.r * 0.8, 0, Math.PI*2);
+        ctx.fillStyle = p.color + hex;
         ctx.fill();
       }
-
-      // Main bright dot
+      // Bright head
+      const head = ptOnPath(ep, p.t);
       ctx.beginPath();
-      ctx.arc(pos.x, pos.y, p.size * 0.5, 0, Math.PI*2);
+      ctx.arc(head.x, head.y, p.r * 0.5, 0, Math.PI*2);
       ctx.fillStyle = p.color;
       ctx.fill();
     });
 
     // Nodes
     NODES.forEach(n => {
-      // Shadow glow on hover not needed — draw node
-      roundRect(ctx, n.x, n.y, n.w, n.h, 10, n.col.fill, n.col.stroke);
-
-      // Label
-      ctx.font = '600 13px Inter, system-ui, sans-serif';
+      rrect(n.x, n.y, n.w, n.h, 10, n.col.fill, n.col.stroke);
       ctx.textAlign = 'center';
+      ctx.font = '600 12px Inter, system-ui, sans-serif';
       ctx.fillStyle = n.col.text;
       ctx.fillText(n.label, n.x + n.w/2, n.y + n.h/2 - 9);
-
-      // Sub
       ctx.font = '400 11px Inter, system-ui, sans-serif';
       ctx.fillStyle = TEXT2;
       ctx.fillText(n.sub, n.x + n.w/2, n.y + n.h/2 + 9);
@@ -810,10 +749,11 @@ function initFlowChart() {
 
     requestAnimationFrame(draw);
   }
-
   requestAnimationFrame(draw);
 }
 
+// ── Navigation ──────────────────────────────────────────────────────────────
+let fcastInitialised = false;
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
