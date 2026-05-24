@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sea to Summit — Supply Chain Planning Hub</title>
+<title>Supply Chain Planning Hub</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
@@ -129,7 +129,7 @@
     <div class="logo-icon">⛰️</div>
     <div>
       <h1>Supply Chain Planning Hub</h1>
-      <p>Sea to Summit · Global Planning Intelligence</p>
+      <p>Global Planning Intelligence</p>
     </div>
   </div>
   <div class="header-meta">
@@ -284,44 +284,25 @@
 
 <!-- ══════════════ HOW IT WORKS ══════════════ -->
 <div id="page-howitworks" class="page">
-  <p class="section-title">How It Works — End to End</p>
+  <p class="section-title">How It Works — Live Data Flow</p>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:24px">Watch how data moves from raw Excel files all the way to your planning dashboard — automatically.</p>
 
-  <!-- Step pills -->
-  <div id="step-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px"></div>
+  <div class="chart-card" style="padding:32px 24px;overflow-x:auto">
+    <canvas id="flowCanvas" style="display:block;width:100%;max-width:1200px;margin:0 auto"></canvas>
+  </div>
 
-  <!-- Step card -->
-  <div id="step-card" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
-
-    <!-- Left: diagram -->
-    <div class="chart-card" style="min-height:380px;display:flex;flex-direction:column">
-      <div id="step-title" style="font-size:15px;font-weight:700;margin-bottom:4px"></div>
-      <div id="step-subtitle" style="font-size:12px;color:var(--muted);margin-bottom:20px"></div>
-      <div id="step-diagram" style="flex:1"></div>
-    </div>
-
-    <!-- Right: explanation -->
-    <div style="display:flex;flex-direction:column;gap:16px">
-      <div class="chart-card">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">What happens here</div>
-        <div id="step-what" style="font-size:13px;line-height:1.75;color:var(--text)"></div>
+  <!-- Click-to-learn detail panel -->
+  <div id="flow-detail" class="chart-card" style="margin-top:20px;display:none;border-left:3px solid var(--accent2)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div id="fd-title" style="font-size:15px;font-weight:700;margin-bottom:6px"></div>
+        <div id="fd-body" style="font-size:13px;color:var(--muted);line-height:1.8"></div>
       </div>
-      <div class="chart-card">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Why it matters</div>
-        <div id="step-why" style="font-size:13px;line-height:1.75;color:var(--text)"></div>
-      </div>
-      <div class="chart-card" id="step-output-card">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Output</div>
-        <div id="step-output" style="font-size:13px;color:var(--text)"></div>
-      </div>
+      <div onclick="document.getElementById('flow-detail').style.display='none'" style="cursor:pointer;color:var(--muted);font-size:18px;margin-left:20px;flex-shrink:0">✕</div>
     </div>
   </div>
 
-  <!-- Prev / Next -->
-  <div style="display:flex;justify-content:space-between;margin-top:24px">
-    <button id="btn-prev" onclick="stepNav(-1)" style="padding:10px 24px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:13px;cursor:pointer">← Previous</button>
-    <div id="step-counter" style="font-size:13px;color:var(--muted);align-self:center"></div>
-    <button id="btn-next" onclick="stepNav(1)" style="padding:10px 24px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:white;font-size:13px;cursor:pointer;font-weight:600">Next →</button>
-  </div>
+  <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:16px">Click any node to learn more</p>
 </div>
 
 <!-- ══════════════ ABOUT ══════════════ -->
@@ -558,269 +539,280 @@ function filterTable() {
   renderTable(filtered);
 }
 
-// ── How It Works Stepper ──────────────────────────────────────────────────
-
-const STEPS = [
-  {
-    pill: '1 · Raw Data',
-    title: 'Step 1 — Three messy regional Excel files',
-    subtitle: 'The starting point: fragmented, inconsistent, untrustworthy',
-    what: `Each regional team maintains their own Excel file — Australia, Europe, and USA. Every file has <strong>different column names</strong>, different date formats, different currencies, missing values, and duplicate rows.<br><br>Nobody can answer a simple question like "what are our top selling products globally?" because the data lives in three incompatible spreadsheets.`,
-    why: `This is the reality for most consumer goods companies. The planning team spends hours every week manually copying, reformatting, and reconciling data — time that should be spent on actual planning decisions.`,
-    output: `📄 Australia_Sales_Planning.xlsx<br>📄 Europe_Demand_Report.xlsx<br>📄 USA_Sales_Data.xlsx`,
-    svg: `<svg width="100%" viewBox="0 0 560 280" role="img"><title>Three messy regional Excel files</title><desc>Australia, Europe and USA files with different column names flowing into a problem</desc>
-<defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<g class="c-teal"><rect x="10" y="20" width="150" height="90" rx="8" stroke-width="0.5"/>
-<text class="th" x="85" y="48" text-anchor="middle" dominant-baseline="central">🇦🇺 Australia</text>
-<text class="ts" x="85" y="68" text-anchor="middle" dominant-baseline="central">SKU_Code, RRP</text>
-<text class="ts" x="85" y="84" text-anchor="middle" dominant-baseline="central">Revenue_AUD</text>
-<text class="ts" x="85" y="100" text-anchor="middle" dominant-baseline="central">DD/MM/YYYY</text></g>
-<g class="c-purple"><rect x="10" y="130" width="150" height="90" rx="8" stroke-width="0.5"/>
-<text class="th" x="85" y="158" text-anchor="middle" dominant-baseline="central">🇪🇺 Europe</text>
-<text class="ts" x="85" y="178" text-anchor="middle" dominant-baseline="central">Item_Number, Price_EUR</text>
-<text class="ts" x="85" y="194" text-anchor="middle" dominant-baseline="central">Net_Sales_EUR</text>
-<text class="ts" x="85" y="210" text-anchor="middle" dominant-baseline="central">DD/MM/YYYY</text></g>
-<g class="c-coral"><rect x="10" y="240" width="150" height="90" rx="8" stroke-width="0.5"/>
-<text class="th" x="85" y="268" text-anchor="middle" dominant-baseline="central">🇺🇸 USA</text>
-<text class="ts" x="85" y="288" text-anchor="middle" dominant-baseline="central">product_id, list_price_usd</text>
-<text class="ts" x="85" y="304" text-anchor="middle" dominant-baseline="central">net_revenue_usd</text>
-<text class="ts" x="85" y="320" text-anchor="middle" dominant-baseline="central">YYYY-MM-DD</text></g>
-<g class="c-red"><rect x="370" y="120" width="175" height="105" rx="8" stroke-width="0.5"/>
-<text class="th" x="457" y="152" text-anchor="middle" dominant-baseline="central">⚠ No single truth</text>
-<text class="ts" x="457" y="174" text-anchor="middle" dominant-baseline="central">3 currencies</text>
-<text class="ts" x="457" y="190" text-anchor="middle" dominant-baseline="central">3 date formats</text>
-<text class="ts" x="457" y="206" text-anchor="middle" dominant-baseline="central">Duplicate rows</text></g>
-<line x1="162" y1="65" x2="368" y2="155" class="arr" marker-end="url(#a2)" stroke="#1D9E75" stroke-width="1.2"/>
-<line x1="162" y1="175" x2="368" y2="175" class="arr" marker-end="url(#a2)" stroke="#534AB7" stroke-width="1.2"/>
-<line x1="162" y1="285" x2="368" y2="195" class="arr" marker-end="url(#a2)" stroke="#D85A30" stroke-width="1.2"/>
-</svg>`
-  },
-  {
-    pill: '2 · Pipeline',
-    title: 'Step 2 — Automated data cleaning pipeline',
-    subtitle: 'Python standardises, deduplicates, and consolidates everything',
-    what: `A Python pipeline reads all three files and applies a series of automated transformations:<br><br>
-• Renames columns to a <strong>standard schema</strong> across all regions<br>
-• Converts all dates to <strong>ISO format</strong> (YYYY-MM-DD)<br>
-• Normalises all revenue to <strong>USD</strong> using live FX rates<br>
-• Removes <strong>duplicate rows</strong> automatically<br>
-• Fills <strong>missing values</strong> using same-SKU, same-season medians<br>
-• Fixes <strong>broken category labels</strong> (TBC, UNKNOWN, mixed case)`,
-    why: `This is the work AI cannot do reliably on its own. Every business has unique column names, business rules, and data quirks. A human data scientist who understands the domain needs to define these rules once — then the pipeline runs automatically every time.`,
-    output: `✅ 30 duplicate rows removed<br>✅ 54 missing values filled<br>✅ 22 broken categories fixed<br>✅ 3 currencies → 1 (USD)`,
-    svg: `<svg width="100%" viewBox="0 0 560 260" role="img"><title>Data cleaning pipeline</title><desc>Python script reads three files and outputs one clean dataset</desc>
-<defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<g class="c-gray"><rect x="10" y="30" width="110" height="38" rx="6" stroke-width="0.5"/>
-<text class="ts" x="65" y="52" text-anchor="middle" dominant-baseline="central">AU file</text></g>
-<g class="c-gray"><rect x="10" y="110" width="110" height="38" rx="6" stroke-width="0.5"/>
-<text class="ts" x="65" y="130" text-anchor="middle" dominant-baseline="central">EU file</text></g>
-<g class="c-gray"><rect x="10" y="190" width="110" height="38" rx="6" stroke-width="0.5"/>
-<text class="ts" x="65" y="210" text-anchor="middle" dominant-baseline="central">USA file</text></g>
-<line x1="122" y1="49" x2="190" y2="110" class="arr" marker-end="url(#a2)"/>
-<line x1="122" y1="130" x2="190" y2="130" class="arr" marker-end="url(#a2)"/>
-<line x1="122" y1="209" x2="190" y2="150" class="arr" marker-end="url(#a2)"/>
-<g class="c-amber"><rect x="192" y="80" width="170" height="100" rx="8" stroke-width="0.5"/>
-<text class="th" x="277" y="108" text-anchor="middle" dominant-baseline="central">Python pipeline</text>
-<text class="ts" x="277" y="128" text-anchor="middle" dominant-baseline="central">Rename · Dedupe · Fill</text>
-<text class="ts" x="277" y="148" text-anchor="middle" dominant-baseline="central">FX convert · Fix cats</text></g>
-<line x1="364" y1="130" x2="430" y2="130" class="arr" marker-end="url(#a2)"/>
-<g class="c-teal"><rect x="432" y="90" width="120" height="80" rx="8" stroke-width="0.5"/>
-<text class="th" x="492" y="118" text-anchor="middle" dominant-baseline="central">Clean data</text>
-<text class="ts" x="492" y="138" text-anchor="middle" dominant-baseline="central">1,080 rows</text>
-<text class="ts" x="492" y="155" text-anchor="middle" dominant-baseline="central">3 regions unified</text></g>
-</svg>`
-  },
-  {
-    pill: '3 · PostgreSQL',
-    title: 'Step 3 — One trusted planning database',
-    subtitle: 'A single source of truth all teams can connect to',
-    what: `The cleaned data is loaded into <strong>PostgreSQL</strong> — a production-grade database that multiple people and systems can query simultaneously.<br><br>Three views are automatically created:<br><br>
-• <code style="color:#4f7fff;font-size:12px">sales_planning</code> — the main fact table (all 1,080 rows)<br>
-• <code style="color:#4f7fff;font-size:12px">monthly_summary</code> — pre-aggregated for dashboards<br>
-• <code style="color:#4f7fff;font-size:12px">inventory_risk_snapshot</code> — latest risk position<br>
-• <code style="color:#4f7fff;font-size:12px">regional_performance</code> — revenue by region and year`,
-    why: `A shared database replaces the chaos of emailing Excel files. Power BI, Python, and every planner can connect to the same data simultaneously. When a new file arrives, the pipeline reruns and the database updates automatically — no manual work.`,
-    output: `🐘 PostgreSQL database: sts_planning<br>📊 4 tables / views ready to query<br>🔗 Connectable from Power BI, Python, Excel`,
-    svg: `<svg width="100%" viewBox="0 0 560 260" role="img"><title>PostgreSQL database with views</title><desc>Clean data loads into PostgreSQL, multiple views serve different users</desc>
-<defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<g class="c-teal"><rect x="10" y="100" width="120" height="60" rx="8" stroke-width="0.5"/>
-<text class="th" x="70" y="128" text-anchor="middle" dominant-baseline="central">Clean data</text>
-<text class="ts" x="70" y="148" text-anchor="middle" dominant-baseline="central">1,080 rows</text></g>
-<line x1="132" y1="130" x2="185" y2="130" class="arr" marker-end="url(#a2)"/>
-<g class="c-purple"><rect x="187" y="60" width="165" height="140" rx="10" stroke-width="0.5"/>
-<text class="th" x="270" y="88" text-anchor="middle" dominant-baseline="central">PostgreSQL</text>
-<text class="ts" x="270" y="108" text-anchor="middle" dominant-baseline="central">sales_planning</text>
-<text class="ts" x="270" y="126" text-anchor="middle" dominant-baseline="central">monthly_summary</text>
-<text class="ts" x="270" y="144" text-anchor="middle" dominant-baseline="central">inventory_risk</text>
-<text class="ts" x="270" y="162" text-anchor="middle" dominant-baseline="central">regional_performance</text></g>
-<line x1="354" y1="100" x2="408" y2="60" class="arr" marker-end="url(#a2)"/>
-<line x1="354" y1="130" x2="408" y2="130" class="arr" marker-end="url(#a2)"/>
-<line x1="354" y1="160" x2="408" y2="200" class="arr" marker-end="url(#a2)"/>
-<g class="c-gray"><rect x="410" y="30" width="130" height="38" rx="6" stroke-width="0.5"/>
-<text class="ts" x="475" y="52" text-anchor="middle" dominant-baseline="central">Power BI dashboard</text></g>
-<g class="c-gray"><rect x="410" y="110" width="130" height="38" rx="6" stroke-width="0.5"/>
-<text class="ts" x="475" y="130" text-anchor="middle" dominant-baseline="central">Python forecasting</text></g>
-<g class="c-gray"><rect x="410" y="185" width="130" height="38" rx="6" stroke-width="0.5"/>
-<text class="ts" x="475" y="205" text-anchor="middle" dominant-baseline="central">Planner Excel query</text></g>
-</svg>`
-  },
-  {
-    pill: '4 · Forecast',
-    title: 'Step 4 — 6-month demand forecast',
-    subtitle: 'Statistical model predicts future demand per SKU per region',
-    what: `A <strong>Holt-Winters Exponential Smoothing</strong> model is trained on 24 months of historical data for each SKU × Region combination — 45 combinations in total.<br><br>
-The model captures two things automatically:<br><br>
-• <strong>Trend</strong> — is demand growing or declining over time?<br>
-• <strong>Seasonality</strong> — when does demand peak each year? (outdoor gear peaks in summer)<br><br>
-The result is a 6-month forward forecast with an 80% confidence interval.`,
-    why: `Without a forecast, planners order based on gut feel or last year's numbers. A statistical forecast gives them an objective starting point — then they can apply their own market knowledge on top. This is called <strong>forecast override</strong> — the human judgement layer on top of the model.`,
-    output: `📈 270 forecast data points<br>(45 SKU-regions × 6 months)<br>📊 80% confidence band per forecast`,
-    svg: `<svg width="100%" viewBox="0 0 560 240" role="img"><title>Demand forecasting model</title><desc>Historical data feeds into Holt-Winters model producing 6 month forecast</desc>
-<defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<g class="c-purple"><rect x="10" y="80" width="140" height="80" rx="8" stroke-width="0.5"/>
-<text class="th" x="80" y="108" text-anchor="middle" dominant-baseline="central">24 months</text>
-<text class="ts" x="80" y="126" text-anchor="middle" dominant-baseline="central">historical sales</text>
-<text class="ts" x="80" y="144" text-anchor="middle" dominant-baseline="central">per SKU × region</text></g>
-<line x1="152" y1="120" x2="200" y2="120" class="arr" marker-end="url(#a2)"/>
-<g class="c-amber"><rect x="202" y="60" width="160" height="120" rx="8" stroke-width="0.5"/>
-<text class="th" x="282" y="95" text-anchor="middle" dominant-baseline="central">Holt-Winters</text>
-<text class="ts" x="282" y="113" text-anchor="middle" dominant-baseline="central">ETS model</text>
-<text class="ts" x="282" y="131" text-anchor="middle" dominant-baseline="central">Captures trend</text>
-<text class="ts" x="282" y="149" text-anchor="middle" dominant-baseline="central">+ seasonality</text></g>
-<line x1="364" y1="120" x2="412" y2="120" class="arr" marker-end="url(#a2)"/>
-<g class="c-teal"><rect x="414" y="70" width="136" height="100" rx="8" stroke-width="0.5"/>
-<text class="th" x="482" y="100" text-anchor="middle" dominant-baseline="central">6-month forecast</text>
-<text class="ts" x="482" y="120" text-anchor="middle" dominant-baseline="central">Units per SKU</text>
-<text class="ts" x="482" y="138" text-anchor="middle" dominant-baseline="central">per region</text>
-<text class="ts" x="482" y="156" text-anchor="middle" dominant-baseline="central">± 80% confidence</text></g>
-</svg>`
-  },
-  {
-    pill: '5 · Inventory Risk',
-    title: 'Step 5 — Inventory risk calculation',
-    subtitle: 'Turns forecast demand into actionable planning decisions',
-    what: `Using the forecast, Python calculates <strong>inventory coverage</strong> for every SKU in every region:<br><br>
-<code style="color:#4f7fff;font-size:12px">Coverage = Current Stock ÷ Forecast Monthly Demand</code><br><br>
-Each SKU-region is then flagged automatically:<br><br>
-• 🔴 <strong>Critical</strong> — less than 1 month of stock. Order immediately.<br>
-• 🟠 <strong>High</strong> — 1–2 months. Expedite replenishment.<br>
-• 🟡 <strong>Medium</strong> — 2–3 months. Plan next order soon.<br>
-• 🟢 <strong>Healthy</strong> — 3–9 months. No action needed.<br>
-• 🟣 <strong>Overstock</strong> — 9+ months. Consider promotions.`,
-    why: `This turns raw data into a <strong>prioritised action list</strong>. The planning team opens one view and immediately knows exactly which SKUs need attention today — no spreadsheet analysis required. This replaces hours of manual work per week.`,
-    output: `🔴 4 Critical SKU-regions<br>🟠 4 High risk SKU-regions<br>🟣 4 Overstock SKU-regions<br>💰 $7,703 stockout value at risk`,
-    svg: `<svg width="100%" viewBox="0 0 560 250" role="img"><title>Inventory risk calculation</title><desc>Forecast demand and current inventory combined to produce risk flags</desc>
-<defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<g class="c-teal"><rect x="10" y="40" width="140" height="60" rx="8" stroke-width="0.5"/>
-<text class="th" x="80" y="65" text-anchor="middle" dominant-baseline="central">Forecast demand</text>
-<text class="ts" x="80" y="85" text-anchor="middle" dominant-baseline="central">units / month</text></g>
-<g class="c-purple"><rect x="10" y="140" width="140" height="60" rx="8" stroke-width="0.5"/>
-<text class="th" x="80" y="165" text-anchor="middle" dominant-baseline="central">Current inventory</text>
-<text class="ts" x="80" y="185" text-anchor="middle" dominant-baseline="central">units on hand</text></g>
-<line x1="152" y1="70" x2="210" y2="115" class="arr" marker-end="url(#a2)"/>
-<line x1="152" y1="170" x2="210" y2="125" class="arr" marker-end="url(#a2)"/>
-<g class="c-amber"><rect x="212" y="90" width="140" height="60" rx="8" stroke-width="0.5"/>
-<text class="th" x="282" y="113" text-anchor="middle" dominant-baseline="central">Coverage calc</text>
-<text class="ts" x="282" y="133" text-anchor="middle" dominant-baseline="central">stock ÷ demand</text></g>
-<line x1="354" y1="120" x2="400" y2="120" class="arr" marker-end="url(#a2)"/>
-<g class="c-red"><rect x="402" y="40" width="148" height="40" rx="6" stroke-width="0.5"/>
-<text class="ts" x="476" y="63" text-anchor="middle" dominant-baseline="central">🔴 Critical — order now</text></g>
-<g class="c-coral"><rect x="402" y="90" width="148" height="40" rx="6" stroke-width="0.5"/>
-<text class="ts" x="476" y="113" text-anchor="middle" dominant-baseline="central">🟠 High — expedite</text></g>
-<g class="c-teal"><rect x="402" y="140" width="148" height="40" rx="6" stroke-width="0.5"/>
-<text class="ts" x="476" y="163" text-anchor="middle" dominant-baseline="central">🟢 Healthy — hold</text></g>
-<g class="c-purple"><rect x="402" y="190" width="148" height="40" rx="6" stroke-width="0.5"/>
-<text class="ts" x="476" y="213" text-anchor="middle" dominant-baseline="central">🟣 Overstock — promote</text></g>
-<line x1="354" y1="108" x2="400" y2="65" class="arr" marker-end="url(#a2)"/>
-<line x1="354" y1="120" x2="400" y2="115" class="arr" marker-end="url(#a2)"/>
-<line x1="354" y1="132" x2="400" y2="160" class="arr" marker-end="url(#a2)"/>
-<line x1="354" y1="132" x2="400" y2="210" class="arr" marker-end="url(#a2)"/>
-</svg>`
-  },
-  {
-    pill: '6 · Dashboard',
-    title: 'Step 6 — This planning dashboard',
-    subtitle: 'All outputs in one place, accessible to everyone',
-    what: `All outputs are brought together into this interactive dashboard — built as a <strong>single HTML file</strong> that works anywhere, with no server or login required.<br><br>
-Four tabs give different audiences what they need:<br><br>
-• <strong>Overview</strong> — global KPIs, trends, and regional revenue for the executive team<br>
-• <strong>Demand Forecast</strong> — 6-month forecast by SKU and region for planning teams<br>
-• <strong>Inventory Risk</strong> — filterable action list for supply chain and purchasing teams<br>
-• <strong>How It Works</strong> — this page, for explaining the system to stakeholders`,
-    why: `A dashboard that lives in one shareable HTML file means <strong>zero IT setup</strong>, no Power BI licence needed for a demo, and it can be hosted on GitHub Pages so anyone with a link can see it. It also means the CEO can open it on their phone.`,
-    output: `🌐 index.html — one file, works everywhere<br>📊 4 interactive tabs<br>🔗 Hosted free on GitHub Pages`,
-    svg: `<svg width="100%" viewBox="0 0 560 240" role="img"><title>Dashboard bringing all outputs together</title><desc>Forecast and inventory risk data flow into a single HTML dashboard</desc>
-<defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<g class="c-teal"><rect x="10" y="40" width="140" height="50" rx="8" stroke-width="0.5"/>
-<text class="th" x="80" y="62" text-anchor="middle" dominant-baseline="central">Demand forecast</text>
-<text class="ts" x="80" y="80" text-anchor="middle" dominant-baseline="central">270 data points</text></g>
-<g class="c-red"><rect x="10" y="110" width="140" height="50" rx="8" stroke-width="0.5"/>
-<text class="th" x="80" y="132" text-anchor="middle" dominant-baseline="central">Inventory risk</text>
-<text class="ts" x="80" y="150" text-anchor="middle" dominant-baseline="central">45 SKU-regions</text></g>
-<g class="c-purple"><rect x="10" y="180" width="140" height="50" rx="8" stroke-width="0.5"/>
-<text class="th" x="80" y="202" text-anchor="middle" dominant-baseline="central">Sales history</text>
-<text class="ts" x="80" y="220" text-anchor="middle" dominant-baseline="central">1,080 rows clean</text></g>
-<line x1="152" y1="65" x2="210" y2="115" class="arr" marker-end="url(#a2)"/>
-<line x1="152" y1="135" x2="210" y2="125" class="arr" marker-end="url(#a2)"/>
-<line x1="152" y1="205" x2="210" y2="135" class="arr" marker-end="url(#a2)"/>
-<g class="c-amber"><rect x="212" y="80" width="148" height="80" rx="10" stroke-width="0.5"/>
-<text class="th" x="286" y="112" text-anchor="middle" dominant-baseline="central">index.html</text>
-<text class="ts" x="286" y="132" text-anchor="middle" dominant-baseline="central">All data embedded</text>
-<text class="ts" x="286" y="150" text-anchor="middle" dominant-baseline="central">Works anywhere</text></g>
-<line x1="362" y1="120" x2="408" y2="80" class="arr" marker-end="url(#a2)"/>
-<line x1="362" y1="120" x2="408" y2="130" class="arr" marker-end="url(#a2)"/>
-<line x1="362" y1="120" x2="408" y2="180" class="arr" marker-end="url(#a2)"/>
-<g class="c-gray"><rect x="410" y="50" width="140" height="40" rx="6" stroke-width="0.5"/>
-<text class="ts" x="480" y="72" text-anchor="middle" dominant-baseline="central">CEO / C-suite</text></g>
-<g class="c-gray"><rect x="410" y="105" width="140" height="40" rx="6" stroke-width="0.5"/>
-<text class="ts" x="480" y="127" text-anchor="middle" dominant-baseline="central">Planning team</text></g>
-<g class="c-gray"><rect x="410" y="160" width="140" height="40" rx="6" stroke-width="0.5"/>
-<text class="ts" x="480" y="182" text-anchor="middle" dominant-baseline="central">Supply chain</text></g>
-</svg>`
-  },
-];
-
-let currentStep = 0;
-
-function renderStep(i) {
-  const s = STEPS[i];
-  document.getElementById('step-title').innerHTML    = s.title;
-  document.getElementById('step-subtitle').innerHTML = s.subtitle;
-  document.getElementById('step-diagram').innerHTML  = s.svg;
-  document.getElementById('step-what').innerHTML     = s.what;
-  document.getElementById('step-why').innerHTML      = s.why;
-  document.getElementById('step-output').innerHTML   = s.output;
-  document.getElementById('step-counter').textContent = `Step ${i+1} of ${STEPS.length}`;
-  document.getElementById('btn-prev').style.opacity = i===0 ? '0.3' : '1';
-  document.getElementById('btn-next').textContent   = i===STEPS.length-1 ? '✓ Done' : 'Next →';
-
-  document.querySelectorAll('.step-pill').forEach((p,idx)=>{
-    p.style.background    = idx===i ? 'var(--accent)'  : 'var(--surface)';
-    p.style.color         = idx===i ? '#fff'            : 'var(--muted)';
-    p.style.borderColor   = idx===i ? 'var(--accent)'  : 'var(--border)';
-    p.style.fontWeight    = idx===i ? '600'             : '400';
-  });
-}
-
-function stepNav(dir) {
-  const next = currentStep + dir;
-  if (next < 0 || next >= STEPS.length) return;
-  currentStep = next;
-  renderStep(currentStep);
-}
-
-function buildPills() {
-  const el = document.getElementById('step-pills');
-  el.innerHTML = STEPS.map((s,i)=>
-    `<div class="step-pill" onclick="currentStep=${i};renderStep(${i})"
-      style="padding:6px 16px;border-radius:20px;border:1px solid var(--border);
-      background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;
-      transition:all .2s">${s.pill}</div>`
-  ).join('');
-}
+// ── How It Works — Animated Canvas Flowchart ────────────────────────────────
 
 let howInitialised = false;
 
+function initFlowChart() {
+  const canvas = document.getElementById('flowCanvas');
+  if (!canvas) return;
+
+  // ── Layout constants ──────────────────────────────────────────────────────
+  const DPR  = window.devicePixelRatio || 1;
+  const W    = Math.min(canvas.parentElement.offsetWidth - 48, 1200);
+  const H    = 480;
+  canvas.width  = W * DPR;
+  canvas.height = H * DPR;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(DPR, DPR);
+
+  // ── Detect dark mode ──────────────────────────────────────────────────────
+  const dark = document.body.style.background.includes('0f') ||
+               window.matchMedia('(prefers-color-scheme: dark)').matches ||
+               true; // dashboard is always dark
+  const BG       = '#1a1d27';
+  const BORDER   = '#2e3348';
+  const TEXT1    = '#e8eaf0';
+  const TEXT2    = '#7c82a0';
+  const PULSE    = '#00c9a7';
+  const PULSE2   = '#4f7fff';
+
+  // ── Node definitions ─────────────────────────────────────────────────────
+  // Each node: { id, label, sub, x, y, w, h, color, border, info }
+  const col = {
+    file:   { fill:'#0d2035', stroke:'#185FA5', text:'#85B7EB' },
+    pipe:   { fill:'#1d1a08', stroke:'#854F0B', text:'#EF9F27' },
+    db:     { fill:'#120d2e', stroke:'#534AB7', text:'#AFA9EC' },
+    fcast:  { fill:'#051f18', stroke:'#0F6E56', text:'#5DCAA5' },
+    risk:   { fill:'#1f0d0d', stroke:'#993C1D', text:'#F0997B' },
+    dash:   { fill:'#0d1f1a', stroke:'#0F6E56', text:'#00c9a7'  },
+  };
+
+  const NW = 130, NH = 64;
+  const NODES = [
+    // Column 1 — Raw files
+    { id:'au',    label:'🇦🇺 Australia',  sub:'Sales_Planning.xlsx',  x:20,  y:80,  w:NW, h:NH, col:col.file,
+      info:{title:'Australia Excel File', body:'Raw sales data from the AU team. Different column names (SKU_Code, RRP, Revenue_AUD), AUD currency, and messy data including duplicates and missing values.'} },
+    { id:'eu',    label:'🇪🇺 Europe',      sub:'Demand_Report.xlsx',    x:20,  y:200, w:NW, h:NH, col:col.file,
+      info:{title:'Europe Excel File', body:'EU planning file with completely different column names (Item_Number, Price_EUR), DD/MM/YYYY date format, EUR currency. Planners had no idea AU and EU were inconsistent.'} },
+    { id:'us',    label:'🇺🇸 USA',         sub:'Sales_Data.xlsx',       x:20,  y:320, w:NW, h:NH, col:col.file,
+      info:{title:'USA Excel File', body:'US data with yet another naming convention (product_id, list_price_usd), includes discount columns not present in other regions. USD currency.'} },
+
+    // Column 2 — Pipeline
+    { id:'pipe',  label:'Python Pipeline', sub:'Clean · Merge · Validate', x:210, y:195, w:NW+20, h:NH+10, col:col.pipe,
+      info:{title:'Automated Data Pipeline', body:'Python reads all 3 files and standardises everything: renames columns, converts dates to ISO format, normalises currencies to USD, removes 30 duplicate rows, fills 54 missing values using seasonal medians, and fixes broken category labels like TBC and UNKNOWN.'} },
+
+    // Column 3 — Database
+    { id:'db',    label:'PostgreSQL',      sub:'Single source of truth',  x:420, y:195, w:NW+10, h:NH+10, col:col.db,
+      info:{title:'PostgreSQL Planning Database', body:'One trusted database replaces 3 disconnected spreadsheets. Contains 1,080 clean rows across all regions. Four views created automatically: sales_planning, monthly_summary, inventory_risk_snapshot, regional_performance. Power BI, Python, and Excel can all connect simultaneously.'} },
+
+    // Column 4 — Forecast + Risk (stacked)
+    { id:'fcast', label:'Demand Forecast', sub:'6-month · Holt-Winters',  x:610, y:130, w:NW+10, h:NH, col:col.fcast,
+      info:{title:'6-Month Demand Forecast', body:'Holt-Winters Exponential Smoothing model trained on 24 months of history per SKU per region (45 combinations). Captures seasonal patterns — outdoor gear peaks in summer. Produces 270 forecast data points with ±80% confidence band.'} },
+    { id:'risk',  label:'Inventory Risk',  sub:'Coverage · Flags · Actions', x:610, y:280, w:NW+10, h:NH, col:col.risk,
+      info:{title:'Inventory Risk Engine', body:'Calculates coverage months = current stock ÷ forecast monthly demand. Flags each SKU-region as Critical (<1 month), High (1–2 months), Healthy (3–9 months), or Overstock (9+ months). Produces prioritised action list — 4 Critical, 4 High, 4 Overstock found.'} },
+
+    // Column 5 — Dashboard
+    { id:'dash',  label:'Planning Hub',    sub:'Live dashboard · GitHub Pages', x:800, y:195, w:NW+20, h:NH+10, col:col.dash,
+      info:{title:'This Planning Dashboard', body:'All outputs in one self-contained HTML file. Four tabs: Overview (KPIs + trends), Demand Forecast (interactive by SKU and region), Inventory Risk (filterable action table), How It Works (this flowchart). Hosted free on GitHub Pages — anyone with the link can open it, including on mobile.'} },
+  ];
+
+  // ── Edge definitions ──────────────────────────────────────────────────────
+  // Each edge: from node id to node id, with optional waypoints
+  const EDGES = [
+    { from:'au',    to:'pipe'  },
+    { from:'eu',    to:'pipe'  },
+    { from:'us',    to:'pipe'  },
+    { from:'pipe',  to:'db'    },
+    { from:'db',    to:'fcast' },
+    { from:'db',    to:'risk'  },
+    { from:'fcast', to:'dash'  },
+    { from:'risk',  to:'dash'  },
+  ];
+
+  // Build node lookup
+  const nodeMap = {};
+  NODES.forEach(n => nodeMap[n.id] = n);
+
+  // ── Compute edge paths ────────────────────────────────────────────────────
+  function nodeRight(n)  { return { x: n.x + n.w, y: n.y + n.h/2 }; }
+  function nodeLeft(n)   { return { x: n.x,        y: n.y + n.h/2 }; }
+  function nodeTop(n)    { return { x: n.x + n.w/2,y: n.y         }; }
+  function nodeBottom(n) { return { x: n.x + n.w/2,y: n.y + n.h   }; }
+
+  function edgePath(e) {
+    const a = nodeMap[e.from], b = nodeMap[e.to];
+    const start = nodeRight(a), end = nodeLeft(b);
+    const mx = (start.x + end.x) / 2;
+    return { sx:start.x, sy:start.y, ex:end.x, ey:end.y, mx };
+  }
+
+  // ── Pulse particles ───────────────────────────────────────────────────────
+  const particles = [];
+  const EDGE_COLORS = ['#00c9a7','#4f7fff','#00c9a7','#4f7fff','#00c9a7','#EF9F27','#00c9a7','#EF9F27'];
+
+  EDGES.forEach((e, i) => {
+    // Stagger initial positions so pulses look continuous
+    for (let k = 0; k < 2; k++) {
+      particles.push({
+        edge: i,
+        t: (k * 0.5 + i * 0.13) % 1,
+        speed: 0.004 + Math.random() * 0.002,
+        color: EDGE_COLORS[i],
+        size: 5 + Math.random() * 3,
+      });
+    }
+  });
+
+  // ── Draw helpers ──────────────────────────────────────────────────────────
+  function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    if (fill)   { ctx.fillStyle = fill;   ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.2; ctx.stroke(); }
+  }
+
+  function drawArrow(ctx, ex, ey, color) {
+    const s = 7;
+    ctx.beginPath();
+    ctx.moveTo(ex, ey);
+    ctx.lineTo(ex - s, ey - s*0.5);
+    ctx.lineTo(ex - s, ey + s*0.5);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  function pointOnEdge(ep, t) {
+    // Bezier cubic: control points at mx
+    const { sx, sy, ex, ey, mx } = ep;
+    const u = 1 - t;
+    const x = u*u*u*sx + 3*u*u*t*mx + 3*u*t*t*mx + t*t*t*ex;
+    const y = u*u*u*sy + 3*u*u*t*sy + 3*u*t*t*ey + t*t*t*ey;
+    return { x, y };
+  }
+
+  // ── Hit test ─────────────────────────────────────────────────────────────
+  canvas.addEventListener('click', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left);
+    const my = (e.clientY - rect.top);
+    for (const n of NODES) {
+      if (mx >= n.x && mx <= n.x+n.w && my >= n.y && my <= n.y+n.h) {
+        const panel = document.getElementById('flow-detail');
+        document.getElementById('fd-title').textContent = n.info.title;
+        document.getElementById('fd-body').textContent  = n.info.body;
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        return;
+      }
+    }
+  });
+
+  canvas.style.cursor = 'default';
+  canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    canvas.style.cursor = NODES.some(n => mx>=n.x && mx<=n.x+n.w && my>=n.y && my<=n.y+n.h) ? 'pointer' : 'default';
+  });
+
+  // ── Main render loop ──────────────────────────────────────────────────────
+  const edgePaths = EDGES.map(e => edgePath(e));
+
+  // Layer labels above diagram
+  const LAYER_LABELS = [
+    { label:'Raw Excel Files', x:20  + NW/2,         color:'#185FA5' },
+    { label:'Python Pipeline', x:210 + (NW+20)/2,    color:'#854F0B' },
+    { label:'PostgreSQL DB',   x:420 + (NW+10)/2,    color:'#534AB7' },
+    { label:'Analytics',       x:610 + (NW+10)/2,    color:'#0F6E56' },
+    { label:'Dashboard',       x:800 + (NW+20)/2,    color:'#0F6E56' },
+  ];
+
+  function draw(ts) {
+    ctx.clearRect(0, 0, W, H);
+
+    // Background
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, W, H);
+
+    // Layer column backgrounds
+    const colBgs = [
+      { x:10,  w:NW+10,    color:'rgba(24,95,165,0.04)' },
+      { x:205, w:NW+30,    color:'rgba(133,79,11,0.04)' },
+      { x:415, w:NW+20,    color:'rgba(83,74,183,0.04)' },
+      { x:605, w:NW+20,    color:'rgba(15,110,86,0.04)' },
+      { x:795, w:NW+35,    color:'rgba(15,110,86,0.04)' },
+    ];
+    colBgs.forEach(c => {
+      ctx.fillStyle = c.color;
+      roundRect(ctx, c.x, 40, c.w, H-55, 10, c.color, null);
+    });
+
+    // Layer labels
+    ctx.font = '500 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    LAYER_LABELS.forEach(l => {
+      ctx.fillStyle = l.color;
+      ctx.fillText(l.label.toUpperCase(), l.x, 28);
+    });
+
+    // Edges (static path)
+    edgePaths.forEach((ep, i) => {
+      ctx.beginPath();
+      ctx.moveTo(ep.sx, ep.sy);
+      ctx.bezierCurveTo(ep.mx, ep.sy, ep.mx, ep.ey, ep.ex, ep.ey);
+      ctx.strokeStyle = BORDER;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([]);
+      ctx.stroke();
+      drawArrow(ctx, ep.ex, ep.ey, BORDER);
+    });
+
+    // Animated pulse particles
+    particles.forEach(p => {
+      p.t += p.speed;
+      if (p.t > 1) p.t -= 1;
+
+      const ep = edgePaths[p.edge];
+      const pos = pointOnEdge(ep, p.t);
+
+      // Glow trail (3 circles, fading)
+      for (let i = 3; i >= 0; i--) {
+        const trailT = Math.max(0, p.t - i * 0.018);
+        const tpos = pointOnEdge(ep, trailT);
+        const alpha = (1 - i/4) * 0.35;
+        ctx.beginPath();
+        ctx.arc(tpos.x, tpos.y, p.size * 0.7, 0, Math.PI*2);
+        ctx.fillStyle = p.color + Math.round(alpha * 255).toString(16).padStart(2,'0');
+        ctx.fill();
+      }
+
+      // Main bright dot
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, p.size * 0.5, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+
+    // Nodes
+    NODES.forEach(n => {
+      // Shadow glow on hover not needed — draw node
+      roundRect(ctx, n.x, n.y, n.w, n.h, 10, n.col.fill, n.col.stroke);
+
+      // Label
+      ctx.font = '600 13px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = n.col.text;
+      ctx.fillText(n.label, n.x + n.w/2, n.y + n.h/2 - 9);
+
+      // Sub
+      ctx.font = '400 11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = TEXT2;
+      ctx.fillText(n.sub, n.x + n.w/2, n.y + n.h/2 + 9);
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+}
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -831,7 +823,7 @@ function showPage(id) {
     buildSkuBtns(); drawFcast(); drawTopSku(); fcastInitialised=true;
   }
   if (id==='howitworks' && !howInitialised) {
-    buildPills(); renderStep(0); howInitialised=true;
+    setTimeout(initFlowChart, 50); howInitialised=true;
   }
 }
 
