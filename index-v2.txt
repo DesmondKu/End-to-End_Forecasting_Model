@@ -142,7 +142,6 @@
   <div class="tab active" onclick="showPage('overview')">📊 Overview</div>
   <div class="tab" onclick="showPage('forecast')">📈 Demand Forecast</div>
   <div class="tab" onclick="showPage('inventory')">📦 Inventory Risk</div>
-  <div class="tab" onclick="showPage('replenishment')">🔁 Replenishment</div>
   <div class="tab" onclick="showPage('howitworks')">⚙️ How It Works</div>
   <div class="tab" onclick="showPage('about')">🛠 About This Project</div>
 </nav>
@@ -283,34 +282,6 @@
   </div>
 </div>
 
-<!-- ══════════════ REPLENISHMENT ══════════════ -->
-<div id="page-replenishment" class="page">
-  <p class="section-title">Replenishment Planner — Open-Source S&OP Engine</p>
-  <p style="color:var(--muted);font-size:13px;margin-bottom:20px">When to order, how much, and what it costs — calculated from forecast demand, current stock, lead times and MOQs. <span style="color:var(--accent2);font-size:11px;margin-left:8px">Lead times: McKinsey Apparel CPO Survey + Outdoor Gear Market Report 2024</span></p>
-  <div class="kpi-grid" style="margin-bottom:20px">
-    <div class="kpi red"><div class="kpi-label">Overdue Orders</div><div class="kpi-value" id="rpl-overdue"></div><div class="kpi-sub">should have ordered already</div></div>
-    <div class="kpi amber"><div class="kpi-label">Order This Week</div><div class="kpi-value" id="rpl-week"></div><div class="kpi-sub">window closing fast</div></div>
-    <div class="kpi amber"><div class="kpi-label">Order This Month</div><div class="kpi-value" id="rpl-month"></div><div class="kpi-sub">plan now</div></div>
-    <div class="kpi blue"><div class="kpi-label">Total Units to Order</div><div class="kpi-value" id="rpl-units" style="font-size:22px"></div><div class="kpi-sub">across all urgent SKUs</div></div>
-    <div class="kpi red"><div class="kpi-label">Total Order Value</div><div class="kpi-value" id="rpl-value" style="font-size:20px"></div><div class="kpi-sub">est. COGS at 40%</div></div>
-  </div>
-  <div class="filter-row">
-    <input class="search-input" type="text" id="rplSearch" placeholder="🔍  Search SKU or product..." oninput="filterRpl()">
-    <select id="rplRegion" onchange="filterRpl()"><option value="">All Regions</option><option>Australia</option><option>Europe</option><option>USA</option></select>
-    <select id="rplUrgency" onchange="filterRpl()"><option value="">All Urgency</option><option>OVERDUE</option><option>This Week</option><option>This Month</option><option>Upcoming</option><option>Planned</option></select>
-    <select id="rplCat" onchange="filterRpl()"><option value="">All Categories</option><option>Accessories</option><option>Camp</option><option>Packs</option><option>Sleeping Bags</option><option>Towels</option></select>
-  </div>
-  <div class="chart-card" style="margin-bottom:20px">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Urgency</th><th>SKU</th><th>Product</th><th>Region</th><th>Stock</th><th>Demand/mo</th><th>Coverage</th><th>Lead Time</th><th>MOQ</th><th>Order Date</th><th>Arrival</th><th>Order Qty</th><th>Order Value</th><th>Stockout</th></tr></thead>
-        <tbody id="rplTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <p style="font-size:11px;color:var(--muted);text-align:right">Lead times from McKinsey Apparel CPO Survey &amp; Outdoor Gear Market Report 2024 (14–22 week benchmark). Safety stock: 1.5 months. Target cover: 3 months. COGS: 40%.</p>
-</div>
-
 <!-- ══════════════ HOW IT WORKS ══════════════ -->
 <div id="page-howitworks" class="page">
   <p class="section-title">How It Works — Live Data Flow</p>
@@ -371,11 +342,9 @@
     </div>
     <div class="about-card">
       <h3>💡 Why AI Alone Can't Do This</h3>
-      <p>The CEO concern: <em>"AI will just consolidate the Excel files."</em></p>
+      <p>Your concern: <em>"AI will just consolidate the Excel files."</em></p>
       <br>
-      <p>The reality: AI needs clean, structured, consistent data to be useful. Without someone to standardise column names across regions, resolve currency differences, fix broken categories, and define what "inventory risk" means for this business — AI produces garbage.</p>
-      <br>
-      <p>This role builds the foundation that makes AI useful. Without it, the AI investment fails.</p>
+      <p>My answer: AI needs clean, structured, consistent data to be useful. Without someone to standardise column names across regions, resolve currency differences, fix broken categories, and define what "inventory risk" means for this business — AI produces garbage.</p>
     </div>
   </div>
 </div>
@@ -565,60 +534,7 @@ function filterTable() {
 }
 
 
-// ── Replenishment Planner ─────────────────────────────────────────────────
-const RPL = {"by_urgency": [{"urgency": "OVERDUE", "count": 14, "units": 2712, "value": 84497.25}, {"urgency": "Planned", "count": 4, "units": 0, "value": 0.0}, {"urgency": "This Month", "count": 10, "units": 1420, "value": 36051.64}, {"urgency": "This Week", "count": 2, "units": 144, "value": 13331.23}, {"urgency": "Upcoming", "count": 15, "units": 2040, "value": 32464.0}], "total_orders_needed": 41, "total_units": 6316, "total_value": 166344.0, "lead_time_source": "McKinsey Apparel CPO Survey + Outdoor Gear Market Report 2024 (14-22 week benchmark)", "rows": [{"sku": "STS-CP-002", "product_name": "Camp Kitchen - Utensil Set", "region": "Europe", "category": "Camp", "current_stock": 50, "monthly_demand": 82.8, "coverage_months": 0.6, "risk_level": "Critical", "lead_time_weeks": 14, "moq": 60, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-09-14", "arrival_date": "2024-12-21", "order_qty": 300, "order_value_usd": 3187.2, "projected_stockout": "2025-01-21"}, {"sku": "STS-PK-002", "product_name": "Pack - Rapid 20L", "region": "Australia", "category": "Packs", "current_stock": 27, "monthly_demand": 44.5, "coverage_months": 0.6, "risk_level": "Critical", "lead_time_weeks": 20, "moq": 48, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-08-03", "arrival_date": "2024-12-21", "order_qty": 144, "order_value_usd": 6685.63, "projected_stockout": "2024-12-21"}, {"sku": "STS-PK-002", "product_name": "Pack - Rapid 20L", "region": "USA", "category": "Packs", "current_stock": 25, "monthly_demand": 41.8, "coverage_months": 0.6, "risk_level": "Critical", "lead_time_weeks": 20, "moq": 48, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-08-03", "arrival_date": "2024-12-21", "order_qty": 144, "order_value_usd": 10365.12, "projected_stockout": "2024-12-21"}, {"sku": "STS-PK-003", "product_name": "Pack - Rapid 30L", "region": "Australia", "category": "Packs", "current_stock": 18, "monthly_demand": 30.8, "coverage_months": 0.6, "risk_level": "Critical", "lead_time_weeks": 20, "moq": 36, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-08-03", "arrival_date": "2024-12-21", "order_qty": 108, "order_value_usd": 6128.78, "projected_stockout": "2024-12-21"}, {"sku": "STS-AC-001", "product_name": "Accessory - Dry Bag 8L", "region": "Europe", "category": "Accessories", "current_stock": 266, "monthly_demand": 205.0, "coverage_months": 1.3, "risk_level": "High", "lead_time_weeks": 12, "moq": 200, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-09-28", "arrival_date": "2024-12-21", "order_qty": 800, "order_value_usd": 5308.8, "projected_stockout": "2025-02-21"}, {"sku": "STS-CP-001", "product_name": "Camp Kitchen - Folding Table", "region": "Europe", "category": "Camp", "current_stock": 30, "monthly_demand": 22.8, "coverage_months": 1.3, "risk_level": "High", "lead_time_weeks": 14, "moq": 24, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-09-14", "arrival_date": "2024-12-21", "order_qty": 72, "order_value_usd": 2488.32, "projected_stockout": "2025-01-21"}, {"sku": "STS-PK-001", "product_name": "Pack - Altitude 60L", "region": "Australia", "category": "Packs", "current_stock": 12, "monthly_demand": 9.2, "coverage_months": 1.3, "risk_level": "High", "lead_time_weeks": 20, "moq": 24, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-08-03", "arrival_date": "2024-12-21", "order_qty": 48, "order_value_usd": 4086.14, "projected_stockout": "2025-02-21"}, {"sku": "STS-PK-001", "product_name": "Pack - Altitude 60L", "region": "USA", "category": "Packs", "current_stock": 20, "monthly_demand": 15.7, "coverage_months": 1.3, "risk_level": "High", "lead_time_weeks": 20, "moq": 24, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-08-03", "arrival_date": "2024-12-21", "order_qty": 48, "order_value_usd": 6335.04, "projected_stockout": "2025-02-21"}, {"sku": "STS-PK-001", "product_name": "Pack - Altitude 60L", "region": "Europe", "category": "Packs", "current_stock": 70, "monthly_demand": 20.7, "coverage_months": 3.4, "risk_level": "Healthy", "lead_time_weeks": 20, "moq": 24, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-10-04", "arrival_date": "2025-02-21", "order_qty": 72, "order_value_usd": 6318.14, "projected_stockout": "2025-04-21"}, {"sku": "STS-AC-001", "product_name": "Accessory - Dry Bag 8L", "region": "USA", "category": "Accessories", "current_stock": 700, "monthly_demand": 201.0, "coverage_months": 3.5, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 200, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-11-29", "arrival_date": "2025-02-21", "order_qty": 600, "order_value_usd": 5988.0, "projected_stockout": "2025-04-21"}, {"sku": "STS-PK-004", "product_name": "Pack - Altitude 80L", "region": "USA", "category": "Packs", "current_stock": 40, "monthly_demand": 9.8, "coverage_months": 4.1, "risk_level": "Healthy", "lead_time_weeks": 20, "moq": 12, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-11-01", "arrival_date": "2025-03-21", "order_qty": 36, "order_value_usd": 5759.28, "projected_stockout": "2025-04-21"}, {"sku": "STS-SL-002", "product_name": "Sleeping Bag - Spark III", "region": "Europe", "category": "Sleeping Bags", "current_stock": 140, "monthly_demand": 33.0, "coverage_months": 4.2, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 50, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-11-15", "arrival_date": "2025-03-21", "order_qty": 100, "order_value_usd": 5318.0, "projected_stockout": "2025-04-21"}, {"sku": "STS-SL-003", "product_name": "Sleeping Bag - Trek", "region": "USA", "category": "Sleeping Bags", "current_stock": 75, "monthly_demand": 17.7, "coverage_months": 4.2, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 30, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-11-15", "arrival_date": "2025-03-21", "order_qty": 60, "order_value_usd": 5998.8, "projected_stockout": "2025-04-21"}, {"sku": "STS-PK-003", "product_name": "Pack - Rapid 30L", "region": "Europe", "category": "Packs", "current_stock": 240, "monthly_demand": 53.5, "coverage_months": 4.5, "risk_level": "Healthy", "lead_time_weeks": 20, "moq": 36, "order_needed": true, "urgency": "OVERDUE", "order_date": "2024-11-01", "arrival_date": "2025-03-21", "order_qty": 180, "order_value_usd": 10530.0, "projected_stockout": "2025-04-21"}, {"sku": "STS-PK-004", "product_name": "Pack - Altitude 80L", "region": "Europe", "category": "Packs", "current_stock": 50, "monthly_demand": 11.3, "coverage_months": 4.4, "risk_level": "Healthy", "lead_time_weeks": 20, "moq": 12, "order_needed": true, "urgency": "This Week", "order_date": "2024-12-02", "arrival_date": "2025-04-21", "order_qty": 36, "order_value_usd": 3829.39, "projected_stockout": "2025-05-21"}, {"sku": "STS-PK-003", "product_name": "Pack - Rapid 30L", "region": "USA", "category": "Packs", "current_stock": 200, "monthly_demand": 36.3, "coverage_months": 5.5, "risk_level": "Healthy", "lead_time_weeks": 20, "moq": 36, "order_needed": true, "urgency": "This Week", "order_date": "2024-12-02", "arrival_date": "2025-04-21", "order_qty": 108, "order_value_usd": 9501.84, "projected_stockout": "2025-05-21"}, {"sku": "STS-AC-003", "product_name": "Accessory - Compression Sack", "region": "USA", "category": "Accessories", "current_stock": 580, "monthly_demand": 162.0, "coverage_months": 3.6, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 150, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-27", "arrival_date": "2025-03-21", "order_qty": 450, "order_value_usd": 3591.0, "projected_stockout": "2025-04-21"}, {"sku": "STS-CP-002", "product_name": "Camp Kitchen - Utensil Set", "region": "Australia", "category": "Camp", "current_stock": 220, "monthly_demand": 53.5, "coverage_months": 4.1, "risk_level": "Healthy", "lead_time_weeks": 14, "moq": 60, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-13", "arrival_date": "2025-03-21", "order_qty": 180, "order_value_usd": 1855.44, "projected_stockout": "2025-04-21"}, {"sku": "STS-AC-002", "product_name": "Accessory - Dry Bag 20L", "region": "Australia", "category": "Accessories", "current_stock": 350, "monthly_demand": 80.0, "coverage_months": 4.4, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 150, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-27", "arrival_date": "2025-03-21", "order_qty": 150, "order_value_usd": 1352.4, "projected_stockout": "2025-05-21"}, {"sku": "STS-AC-003", "product_name": "Accessory - Compression Sack", "region": "Australia", "category": "Accessories", "current_stock": 420, "monthly_demand": 93.3, "coverage_months": 4.5, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 150, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-27", "arrival_date": "2025-03-21", "order_qty": 150, "order_value_usd": 772.2, "projected_stockout": "2025-05-21"}, {"sku": "STS-SL-003", "product_name": "Sleeping Bag - Trek", "region": "Europe", "category": "Sleeping Bags", "current_stock": 90, "monthly_demand": 18.7, "coverage_months": 4.8, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 30, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-16", "arrival_date": "2025-04-21", "order_qty": 60, "order_value_usd": 3988.56, "projected_stockout": "2025-05-21"}, {"sku": "STS-SL-001", "product_name": "Sleeping Bag - Spark 0", "region": "Europe", "category": "Sleeping Bags", "current_stock": 200, "monthly_demand": 41.2, "coverage_months": 4.9, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 50, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-16", "arrival_date": "2025-04-21", "order_qty": 150, "order_value_usd": 5982.0, "projected_stockout": "2025-05-21"}, {"sku": "STS-SL-002", "product_name": "Sleeping Bag - Spark III", "region": "USA", "category": "Sleeping Bags", "current_stock": 120, "monthly_demand": 24.2, "coverage_months": 5.0, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 50, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-16", "arrival_date": "2025-04-21", "order_qty": 100, "order_value_usd": 7998.0, "projected_stockout": "2025-05-21"}, {"sku": "STS-SL-001", "product_name": "Sleeping Bag - Spark 0", "region": "USA", "category": "Sleeping Bags", "current_stock": 180, "monthly_demand": 35.5, "coverage_months": 5.1, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 50, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-16", "arrival_date": "2025-04-21", "order_qty": 100, "order_value_usd": 5998.0, "projected_stockout": "2025-05-21"}, {"sku": "STS-SL-002", "product_name": "Sleeping Bag - Spark III", "region": "Australia", "category": "Sleeping Bags", "current_stock": 85, "monthly_demand": 15.8, "coverage_months": 5.4, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 50, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-16", "arrival_date": "2025-04-21", "order_qty": 50, "order_value_usd": 2579.4, "projected_stockout": "2025-05-21"}, {"sku": "STS-SL-003", "product_name": "Sleeping Bag - Trek", "region": "Australia", "category": "Sleeping Bags", "current_stock": 60, "monthly_demand": 10.8, "coverage_months": 5.6, "risk_level": "Healthy", "lead_time_weeks": 18, "moq": 30, "order_needed": true, "urgency": "This Month", "order_date": "2024-12-16", "arrival_date": "2025-04-21", "order_qty": 30, "order_value_usd": 1934.64, "projected_stockout": "2025-05-21"}, {"sku": "STS-TW-002", "product_name": "Towel - DryLite L", "region": "Australia", "category": "Towels", "current_stock": 300, "monthly_demand": 77.2, "coverage_months": 3.9, "risk_level": "Healthy", "lead_time_weeks": 10, "moq": 100, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-10", "arrival_date": "2025-03-21", "order_qty": 200, "order_value_usd": 2577.6, "projected_stockout": "2025-04-21"}, {"sku": "STS-AC-002", "product_name": "Accessory - Dry Bag 20L", "region": "Europe", "category": "Accessories", "current_stock": 560, "monthly_demand": 127.2, "coverage_months": 4.4, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 150, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-27", "arrival_date": "2025-04-21", "order_qty": 300, "order_value_usd": 2788.8, "projected_stockout": "2025-05-21"}, {"sku": "STS-CP-001", "product_name": "Camp Kitchen - Folding Table", "region": "USA", "category": "Camp", "current_stock": 65, "monthly_demand": 14.3, "coverage_months": 4.5, "risk_level": "Healthy", "lead_time_weeks": 14, "moq": 24, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-13", "arrival_date": "2025-04-21", "order_qty": 48, "order_value_usd": 2495.04, "projected_stockout": "2025-05-21"}, {"sku": "STS-CP-002", "product_name": "Camp Kitchen - Utensil Set", "region": "USA", "category": "Camp", "current_stock": 290, "monthly_demand": 63.8, "coverage_months": 4.5, "risk_level": "Healthy", "lead_time_weeks": 14, "moq": 60, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-13", "arrival_date": "2025-04-21", "order_qty": 180, "order_value_usd": 2876.4, "projected_stockout": "2025-05-21"}, {"sku": "STS-TW-001", "product_name": "Towel - DryLite S", "region": "USA", "category": "Towels", "current_stock": 550, "monthly_demand": 122.8, "coverage_months": 4.5, "risk_level": "Healthy", "lead_time_weeks": 10, "moq": 100, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-10", "arrival_date": "2025-03-21", "order_qty": 200, "order_value_usd": 2396.0, "projected_stockout": "2025-05-21"}, {"sku": "STS-TW-002", "product_name": "Towel - DryLite L", "region": "USA", "category": "Towels", "current_stock": 410, "monthly_demand": 87.2, "coverage_months": 4.7, "risk_level": "Healthy", "lead_time_weeks": 10, "moq": 100, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-02-10", "arrival_date": "2025-04-21", "order_qty": 100, "order_value_usd": 1998.0, "projected_stockout": "2025-05-21"}, {"sku": "STS-AC-001", "product_name": "Accessory - Dry Bag 8L", "region": "Australia", "category": "Accessories", "current_stock": 500, "monthly_demand": 104.5, "coverage_months": 4.8, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 200, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-27", "arrival_date": "2025-04-21", "order_qty": 200, "order_value_usd": 1287.2, "projected_stockout": "2025-05-21"}, {"sku": "STS-AC-002", "product_name": "Accessory - Dry Bag 20L", "region": "USA", "category": "Accessories", "current_stock": 490, "monthly_demand": 101.5, "coverage_months": 4.8, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 150, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-27", "arrival_date": "2025-04-21", "order_qty": 150, "order_value_usd": 2097.0, "projected_stockout": "2025-05-21"}, {"sku": "STS-TW-002", "product_name": "Towel - DryLite L", "region": "Europe", "category": "Towels", "current_stock": 480, "monthly_demand": 98.8, "coverage_months": 4.9, "risk_level": "Healthy", "lead_time_weeks": 10, "moq": 100, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-02-10", "arrival_date": "2025-04-21", "order_qty": 100, "order_value_usd": 1328.4, "projected_stockout": "2025-05-21"}, {"sku": "STS-TW-003", "product_name": "Towel - Tek Towel XL", "region": "USA", "category": "Towels", "current_stock": 250, "monthly_demand": 50.0, "coverage_months": 5.0, "risk_level": "Healthy", "lead_time_weeks": 10, "moq": 72, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-02-10", "arrival_date": "2025-04-21", "order_qty": 72, "order_value_usd": 2014.56, "projected_stockout": "2025-05-21"}, {"sku": "STS-CP-001", "product_name": "Camp Kitchen - Folding Table", "region": "Australia", "category": "Camp", "current_stock": 55, "monthly_demand": 10.8, "coverage_months": 5.1, "risk_level": "Healthy", "lead_time_weeks": 14, "moq": 24, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-13", "arrival_date": "2025-04-21", "order_qty": 24, "order_value_usd": 804.67, "projected_stockout": "2025-05-21"}, {"sku": "STS-TW-001", "product_name": "Towel - DryLite S", "region": "Australia", "category": "Towels", "current_stock": 400, "monthly_demand": 73.5, "coverage_months": 5.4, "risk_level": "Healthy", "lead_time_weeks": 10, "moq": 100, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-02-10", "arrival_date": "2025-04-21", "order_qty": 100, "order_value_usd": 772.8, "projected_stockout": "2025-05-21"}, {"sku": "STS-TW-003", "product_name": "Towel - Tek Towel XL", "region": "Europe", "category": "Towels", "current_stock": 290, "monthly_demand": 53.0, "coverage_months": 5.5, "risk_level": "Healthy", "lead_time_weeks": 10, "moq": 72, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-02-10", "arrival_date": "2025-04-21", "order_qty": 72, "order_value_usd": 1339.49, "projected_stockout": "2025-05-21"}, {"sku": "STS-AC-003", "product_name": "Accessory - Compression Sack", "region": "Europe", "category": "Accessories", "current_stock": 670, "monthly_demand": 116.2, "coverage_months": 5.8, "risk_level": "Healthy", "lead_time_weeks": 12, "moq": 150, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-02-26", "arrival_date": "2025-05-21", "order_qty": 150, "order_value_usd": 796.2, "projected_stockout": "2025-05-21"}, {"sku": "STS-PK-002", "product_name": "Pack - Rapid 20L", "region": "Europe", "category": "Packs", "current_stock": 310, "monthly_demand": 53.3, "coverage_months": 5.8, "risk_level": "Healthy", "lead_time_weeks": 20, "moq": 48, "order_needed": true, "urgency": "Upcoming", "order_date": "2025-01-01", "arrival_date": "2025-05-21", "order_qty": 144, "order_value_usd": 6891.84, "projected_stockout": "2025-05-21"}, {"sku": "STS-PK-004", "product_name": "Pack - Altitude 80L", "region": "Australia", "category": "Packs", "current_stock": 95, "monthly_demand": 6.8, "coverage_months": 14.0, "risk_level": "Overstock", "lead_time_weeks": 20, "moq": 12, "order_needed": false, "urgency": "Planned", "order_date": "2025-07-24", "arrival_date": "2025-12-11", "order_qty": 0, "order_value_usd": 0.0, "projected_stockout": "No stockout"}, {"sku": "STS-SL-001", "product_name": "Sleeping Bag - Spark 0", "region": "Australia", "category": "Sleeping Bags", "current_stock": 234, "monthly_demand": 16.7, "coverage_months": 14.0, "risk_level": "Overstock", "lead_time_weeks": 18, "moq": 50, "order_needed": false, "urgency": "Planned", "order_date": "2025-08-07", "arrival_date": "2025-12-11", "order_qty": 0, "order_value_usd": 0.0, "projected_stockout": "No stockout"}, {"sku": "STS-TW-001", "product_name": "Towel - DryLite S", "region": "Europe", "category": "Towels", "current_stock": 2026, "monthly_demand": 144.7, "coverage_months": 14.0, "risk_level": "Overstock", "lead_time_weeks": 10, "moq": 100, "order_needed": false, "urgency": "Planned", "order_date": "2025-10-02", "arrival_date": "2025-12-11", "order_qty": 0, "order_value_usd": 0.0, "projected_stockout": "No stockout"}, {"sku": "STS-TW-003", "product_name": "Towel - Tek Towel XL", "region": "Australia", "category": "Towels", "current_stock": 508, "monthly_demand": 36.3, "coverage_months": 14.0, "risk_level": "Overstock", "lead_time_weeks": 10, "moq": 72, "order_needed": false, "urgency": "Planned", "order_date": "2025-10-02", "arrival_date": "2025-12-11", "order_qty": 0, "order_value_usd": 0.0, "projected_stockout": "No stockout"}]};
-let rplInitialised = false;
-
-function initReplenishment() {
-  const byU = {};
-  RPL.by_urgency.forEach(r => byU[r.urgency] = r);
-  document.getElementById('rpl-overdue').textContent = byU['OVERDUE']?.count || 0;
-  document.getElementById('rpl-week').textContent    = byU['This Week']?.count || 0;
-  document.getElementById('rpl-month').textContent   = byU['This Month']?.count || 0;
-  document.getElementById('rpl-units').textContent   = RPL.total_units.toLocaleString();
-  document.getElementById('rpl-value').textContent   = '$' + RPL.total_value.toLocaleString();
-  filterRpl();
-}
-
-function urgencyBadge(u) {
-  const map = {'OVERDUE':['#ef4444','rgba(239,68,68,.15)'],'This Week':['#f59e0b','rgba(245,158,11,.15)'],'This Month':['#eab308','rgba(234,179,8,.15)'],'Upcoming':['#22c55e','rgba(34,197,94,.15)'],'Planned':['#7c82a0','rgba(124,130,160,.1)']};
-  const [color,bg] = map[u] || ['#7c82a0','rgba(124,130,160,.1)'];
-  return `<span class="badge" style="background:${bg};color:${color}">${u}</span>`;
-}
-
-function coverBarRpl(months) {
-  const pct = Math.min(months/6*100,100);
-  const col = months<1?'#ef4444':months<2?'#f59e0b':months<3?'#eab308':'#22c55e';
-  return `<span class="cov-bar"><span class="cov-fill" style="width:${pct}%;background:${col}"></span></span>${months}m`;
-}
-
-function filterRpl() {
-  const q=document.getElementById('rplSearch').value.toLowerCase();
-  const reg=document.getElementById('rplRegion').value;
-  const urg=document.getElementById('rplUrgency').value;
-  const cat=document.getElementById('rplCat').value;
-  const rows=RPL.rows.filter(r=>(!q||r.sku.toLowerCase().includes(q)||r.product_name.toLowerCase().includes(q))&&(!reg||r.region===reg)&&(!urg||r.urgency===urg)&&(!cat||r.category===cat));
-  document.getElementById('rplTableBody').innerHTML=rows.map(r=>`
-    <tr>
-      <td>${urgencyBadge(r.urgency)}</td>
-      <td><code style="color:#4f7fff;font-size:12px">${r.sku}</code></td>
-      <td>${r.product_name}</td><td>${r.region}</td>
-      <td><strong>${r.current_stock.toLocaleString()}</strong></td>
-      <td>${r.monthly_demand}/mo</td>
-      <td>${coverBarRpl(r.coverage_months)}</td>
-      <td style="color:var(--muted)">${r.lead_time_weeks}w</td>
-      <td style="color:var(--muted)">${r.moq}</td>
-      <td style="color:${r.urgency==='OVERDUE'?'#ef4444':'var(--text)'}"><strong>${r.order_date}</strong></td>
-      <td style="color:var(--muted);font-size:12px">${r.arrival_date}</td>
-      <td><strong style="color:${r.order_qty>0?'#f59e0b':'var(--muted)'}">
-        ${r.order_qty>0?r.order_qty.toLocaleString():'—'}</strong></td>
-      <td style="color:${r.order_value_usd>0?'#ef4444':'var(--muted)'}">
-        ${r.order_value_usd>0?'$'+r.order_value_usd.toLocaleString():'—'}</td>
-      <td style="font-size:12px;color:${r.projected_stockout!=='No stockout'?'#ef4444':'#22c55e'}">${r.projected_stockout}</td>
-    </tr>`).join('');
-}
-
-// ── How It Works Flowchart ────────────────────────────────────────────────
+// ── How It Works — Animated Flowchart ─────────────────────────────────────
 let howInitialised = false;
 
 function initFlowChart() {
@@ -627,120 +543,210 @@ function initFlowChart() {
   const DPR = window.devicePixelRatio || 1;
   const W   = Math.min(canvas.parentElement.offsetWidth - 48, 1200);
   const H   = 480;
-  canvas.width  = W * DPR; canvas.height = H * DPR;
-  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  canvas.width  = W * DPR;
+  canvas.height = H * DPR;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
   const ctx = canvas.getContext('2d');
   ctx.scale(DPR, DPR);
-  const BG='#1a1d27', BORDER='#2e3348', TEXT2='#7c82a0';
+
+  const BG = '#1a1d27', BORDER = '#2e3348', TEXT2 = '#7c82a0';
+
   const col = {
-    file:  {fill:'#0d2035',stroke:'#185FA5',text:'#85B7EB'},
-    pipe:  {fill:'#1d1a08',stroke:'#854F0B',text:'#EF9F27'},
-    db:    {fill:'#120d2e',stroke:'#534AB7',text:'#AFA9EC'},
-    fcast: {fill:'#051f18',stroke:'#0F6E56',text:'#5DCAA5'},
-    risk:  {fill:'#1f0d0d',stroke:'#993C1D',text:'#F0997B'},
-    dash:  {fill:'#0d1f1a',stroke:'#0F6E56',text:'#00c9a7'},
+    file:  { fill:'#0d2035', stroke:'#185FA5', text:'#85B7EB' },
+    pipe:  { fill:'#1d1a08', stroke:'#854F0B', text:'#EF9F27' },
+    db:    { fill:'#120d2e', stroke:'#534AB7', text:'#AFA9EC' },
+    fcast: { fill:'#051f18', stroke:'#0F6E56', text:'#5DCAA5' },
+    risk:  { fill:'#1f0d0d', stroke:'#993C1D', text:'#F0997B' },
+    dash:  { fill:'#0d1f1a', stroke:'#0F6E56', text:'#00c9a7' },
   };
-  const NW=130, NH=64;
-  const NODES=[
-    {id:'au',label:'AU Excel',sub:'Sales_Planning.xlsx',x:20,y:80,w:NW,h:NH,col:col.file,info:{title:'Australia Excel File',body:'Raw AU sales data with column names like SKU_Code, RRP, Revenue_AUD. AUD currency, messy data including duplicates and missing values.'}},
-    {id:'eu',label:'EU Excel',sub:'Demand_Report.xlsx',x:20,y:200,w:NW,h:NH,col:col.file,info:{title:'Europe Excel File',body:'EU file with completely different column names: Item_Number, Price_EUR, Net_Sales_EUR. DD/MM/YYYY date format. EUR currency.'}},
-    {id:'us',label:'USA Excel',sub:'Sales_Data.xlsx',x:20,y:320,w:NW,h:NH,col:col.file,info:{title:'USA Excel File',body:'US data with yet another naming style: product_id, list_price_usd, net_revenue_usd. Includes extra discount columns not in other regions.'}},
-    {id:'pipe',label:'Python Pipeline',sub:'Clean · Merge · Validate',x:205,y:190,w:NW+25,h:NH+15,col:col.pipe,info:{title:'Automated Data Pipeline',body:'Python reads all 3 files, standardises column names, converts dates, normalises currencies to USD, removes 30 duplicate rows, fills 54 missing values, fixes broken category labels. Runs automatically when new files arrive.'}},
-    {id:'db',label:'PostgreSQL',sub:'Single source of truth',x:410,y:190,w:NW+15,h:NH+15,col:col.db,info:{title:'PostgreSQL Planning Database',body:'One trusted database replacing 3 disconnected spreadsheets. 1,080 clean rows. Four views: sales_planning, monthly_summary, inventory_risk_snapshot, regional_performance. Power BI, Python, and Excel connect simultaneously.'}},
-    {id:'fcast',label:'Demand Forecast',sub:'6-month · Holt-Winters',x:600,y:120,w:NW+15,h:NH,col:col.fcast,info:{title:'6-Month Demand Forecast',body:'Holt-Winters Exponential Smoothing on 24 months of history per SKU per region — 45 combinations. Captures seasonal patterns. 270 forecast data points with 80% confidence band.'}},
-    {id:'risk',label:'Inventory Risk',sub:'Coverage · Flags · Actions',x:600,y:275,w:NW+15,h:NH,col:col.risk,info:{title:'Inventory Risk Engine',body:'Coverage months = current stock ÷ forecast monthly demand. Flags Critical (<1 month), High (1-2 months), Healthy (3-9 months), Overstock (9+ months). 4 Critical, 4 High identified.'}},
-    {id:'dash',label:'Planning Hub',sub:'Dashboard · GitHub Pages',x:800,y:190,w:NW+25,h:NH+15,col:col.dash,info:{title:'This Planning Dashboard',body:'All outputs in one self-contained HTML file. Five tabs: Overview, Demand Forecast, Inventory Risk, Replenishment Planner, How It Works. Hosted free on GitHub Pages.'}},
+
+  const NW = 130, NH = 64;
+  const NODES = [
+    { id:'au',    label:'AU Excel',         sub:'Sales_Planning.xlsx',      x:20,  y:80,  w:NW,    h:NH,    col:col.file,
+      info:{ title:'Australia Excel File', body:'Raw AU sales data with column names like SKU_Code, RRP, Revenue_AUD. AUD currency, messy data including duplicates and missing values.' }},
+    { id:'eu',    label:'EU Excel',          sub:'Demand_Report.xlsx',       x:20,  y:200, w:NW,    h:NH,    col:col.file,
+      info:{ title:'Europe Excel File', body:'EU file with completely different column names: Item_Number, Price_EUR, Net_Sales_EUR. DD/MM/YYYY date format. EUR currency. Totally inconsistent with AU.' }},
+    { id:'us',    label:'USA Excel',         sub:'Sales_Data.xlsx',          x:20,  y:320, w:NW,    h:NH,    col:col.file,
+      info:{ title:'USA Excel File', body:'US data with yet another naming style: product_id, list_price_usd, net_revenue_usd. Includes extra discount columns not in other regions.' }},
+    { id:'pipe',  label:'Python Pipeline',  sub:'Clean · Merge · Validate', x:205, y:190, w:NW+25, h:NH+15, col:col.pipe,
+      info:{ title:'Automated Data Pipeline', body:'Python reads all 3 files, standardises column names, converts dates to ISO format, normalises currencies to USD, removes 30 duplicate rows, fills 54 missing values using seasonal medians, and fixes broken category labels like TBC and UNKNOWN. Runs automatically when new files arrive.' }},
+    { id:'db',    label:'PostgreSQL',        sub:'Single source of truth',   x:410, y:190, w:NW+15, h:NH+15, col:col.db,
+      info:{ title:'PostgreSQL Planning Database', body:'One trusted database replaces 3 disconnected spreadsheets. 1,080 clean rows across all regions. Four views created automatically: sales_planning, monthly_summary, inventory_risk_snapshot, regional_performance. Power BI, Python, and Excel can all connect simultaneously.' }},
+    { id:'fcast', label:'Demand Forecast',  sub:'6-month · Holt-Winters',   x:600, y:120, w:NW+15, h:NH,    col:col.fcast,
+      info:{ title:'6-Month Demand Forecast', body:'Holt-Winters Exponential Smoothing trained on 24 months of history per SKU per region — 45 combinations total. Captures seasonal patterns. Produces 270 forecast data points with 80% confidence band.' }},
+    { id:'risk',  label:'Inventory Risk',   sub:'Coverage · Flags · Actions',x:600, y:275, w:NW+15, h:NH,    col:col.risk,
+      info:{ title:'Inventory Risk Engine', body:'Calculates coverage months = current stock ÷ forecast monthly demand. Flags each SKU-region: Critical (<1 month), High (1-2 months), Healthy (3-9 months), Overstock (9+ months). Result: 4 Critical, 4 High, 4 Overstock SKU-regions identified.' }},
+    { id:'dash',  label:'Planning Hub',     sub:'Dashboard · GitHub Pages',  x:800, y:190, w:NW+25, h:NH+15, col:col.dash,
+      info:{ title:'This Planning Dashboard', body:'All outputs in one self-contained HTML file. Four tabs: Overview (KPIs + trends), Demand Forecast (interactive by SKU and region), Inventory Risk (filterable action table), How It Works (this animated flowchart). Hosted free on GitHub Pages — shareable link, works on mobile.' }},
   ];
-  const EDGES=[
-    {from:'au',to:'pipe',color:'#185FA5'},{from:'eu',to:'pipe',color:'#534AB7'},
-    {from:'us',to:'pipe',color:'#993C1D'},{from:'pipe',to:'db',color:'#EF9F27'},
-    {from:'db',to:'fcast',color:'#00c9a7'},{from:'db',to:'risk',color:'#00c9a7'},
-    {from:'fcast',to:'dash',color:'#4f7fff'},{from:'risk',to:'dash',color:'#4f7fff'},
+
+  const EDGES = [
+    { from:'au',   to:'pipe', color:'#185FA5' },
+    { from:'eu',   to:'pipe', color:'#534AB7' },
+    { from:'us',   to:'pipe', color:'#993C1D' },
+    { from:'pipe', to:'db',   color:'#EF9F27' },
+    { from:'db',   to:'fcast',color:'#00c9a7' },
+    { from:'db',   to:'risk', color:'#00c9a7' },
+    { from:'fcast',to:'dash', color:'#4f7fff' },
+    { from:'risk', to:'dash', color:'#4f7fff' },
   ];
-  const nodeMap={};
-  NODES.forEach(n=>nodeMap[n.id]=n);
-  function getEP(e) {
-    const a=nodeMap[e.from],b=nodeMap[e.to];
-    const sx=a.x+a.w,sy=a.y+a.h/2,ex=b.x,ey=b.y+b.h/2,mx=(sx+ex)/2;
-    return {sx,sy,ex,ey,mx};
+
+  const nodeMap = {};
+  NODES.forEach(n => nodeMap[n.id] = n);
+
+  function getEdgePath(e) {
+    const a = nodeMap[e.from], b = nodeMap[e.to];
+    const sx = a.x + a.w, sy = a.y + a.h / 2;
+    const ex = b.x,        ey = b.y + b.h / 2;
+    const mx = (sx + ex) / 2;
+    return { sx, sy, ex, ey, mx };
   }
-  const edgePaths=EDGES.map(e=>getEP(e));
-  const particles=[];
-  EDGES.forEach((e,i)=>{
-    for(let k=0;k<2;k++) particles.push({ei:i,t:(k*0.5+i*0.11)%1,speed:0.0035+Math.random()*0.002,color:e.color,r:4+Math.random()*2});
+
+  const edgePaths = EDGES.map(e => getEdgePath(e));
+
+  // Particles — 2 per edge, staggered
+  const particles = [];
+  EDGES.forEach((e, i) => {
+    for (let k = 0; k < 2; k++) {
+      particles.push({
+        ei: i,
+        t: (k * 0.5 + i * 0.11) % 1,
+        speed: 0.0035 + Math.random() * 0.002,
+        color: e.color,
+        r: 4 + Math.random() * 2,
+      });
+    }
   });
-  function ptOn(ep,t) {
-    const u=1-t;
-    return {x:u*u*u*ep.sx+3*u*u*t*ep.mx+3*u*t*t*ep.mx+t*t*t*ep.ex,
-             y:u*u*u*ep.sy+3*u*u*t*ep.sy+3*u*t*t*ep.ey+t*t*t*ep.ey};
+
+  function ptOnPath(ep, t) {
+    const u = 1 - t;
+    return {
+      x: u*u*u*ep.sx + 3*u*u*t*ep.mx + 3*u*t*t*ep.mx + t*t*t*ep.ex,
+      y: u*u*u*ep.sy + 3*u*u*t*ep.sy + 3*u*t*t*ep.ey + t*t*t*ep.ey,
+    };
   }
-  function rr(x,y,w,h,r,fill,stroke) {
-    ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-    ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-    ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-    ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
-    if(fill){ctx.fillStyle=fill;ctx.fill();}
-    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.2;ctx.stroke();}
+
+  function rrect(x, y, w, h, r, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+    if (fill)   { ctx.fillStyle=fill;   ctx.fill(); }
+    if (stroke) { ctx.strokeStyle=stroke; ctx.lineWidth=1.2; ctx.stroke(); }
   }
-  function ah(ex,ey,color){
-    const s=7;ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-s,ey-s*0.5);ctx.lineTo(ex-s,ey+s*0.5);
-    ctx.closePath();ctx.fillStyle=color;ctx.fill();
+
+  function arrowHead(ex, ey, color) {
+    const s = 7;
+    ctx.beginPath();
+    ctx.moveTo(ex, ey);
+    ctx.lineTo(ex-s, ey-s*0.5);
+    ctx.lineTo(ex-s, ey+s*0.5);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
   }
-  canvas.style.cursor='default';
-  canvas.onclick=function(e){
-    const r=canvas.getBoundingClientRect();
-    const mx=e.clientX-r.left,my=e.clientY-r.top;
-    for(const n of NODES){
-      if(mx>=n.x&&mx<=n.x+n.w&&my>=n.y&&my<=n.y+n.h){
-        document.getElementById('fd-title').textContent=n.info.title;
-        document.getElementById('fd-body').textContent=n.info.body;
-        const p=document.getElementById('flow-detail');
-        p.style.display='block';p.scrollIntoView({behavior:'smooth',block:'nearest'});return;
+
+  // Click handler
+  canvas.style.cursor = 'default';
+  canvas.onclick = function(e) {
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
+    for (const n of NODES) {
+      if (mx >= n.x && mx <= n.x+n.w && my >= n.y && my <= n.y+n.h) {
+        document.getElementById('fd-title').textContent = n.info.title;
+        document.getElementById('fd-body').textContent  = n.info.body;
+        const panel = document.getElementById('flow-detail');
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        return;
       }
     }
   };
-  canvas.onmousemove=function(e){
-    const r=canvas.getBoundingClientRect();
-    const mx=e.clientX-r.left,my=e.clientY-r.top;
-    canvas.style.cursor=NODES.some(n=>mx>=n.x&&mx<=n.x+n.w&&my>=n.y&&my<=n.y+n.h)?'pointer':'default';
+  canvas.onmousemove = function(e) {
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
+    canvas.style.cursor = NODES.some(n => mx>=n.x && mx<=n.x+n.w && my>=n.y && my<=n.y+n.h) ? 'pointer' : 'default';
   };
-  const LLABELS=[
-    {label:'RAW EXCEL FILES',cx:20+NW/2,color:'#185FA5'},
-    {label:'PYTHON PIPELINE',cx:205+(NW+25)/2,color:'#854F0B'},
-    {label:'POSTGRESQL DB',cx:410+(NW+15)/2,color:'#534AB7'},
-    {label:'ANALYTICS',cx:600+(NW+15)/2,color:'#0F6E56'},
-    {label:'DASHBOARD',cx:800+(NW+25)/2,color:'#0F6E56'},
+
+  const LAYER_LABELS = [
+    { label:'RAW EXCEL FILES', cx: 20 + NW/2,           color:'#185FA5' },
+    { label:'PYTHON PIPELINE', cx: 205 + (NW+25)/2,     color:'#854F0B' },
+    { label:'POSTGRESQL DB',   cx: 410 + (NW+15)/2,     color:'#534AB7' },
+    { label:'ANALYTICS',       cx: 600 + (NW+15)/2,     color:'#0F6E56' },
+    { label:'DASHBOARD',       cx: 800 + (NW+25)/2,     color:'#0F6E56' },
   ];
-  const COLBG=[
-    {x:12,w:NW+8,color:'rgba(24,95,165,0.05)'},{x:198,w:NW+40,color:'rgba(133,79,11,0.05)'},
-    {x:403,w:NW+30,color:'rgba(83,74,183,0.05)'},{x:593,w:NW+30,color:'rgba(15,110,86,0.05)'},
-    {x:793,w:NW+40,color:'rgba(15,110,86,0.05)'},
+
+  const COL_BG = [
+    { x:12,  w:NW+8,    color:'rgba(24,95,165,0.05)'  },
+    { x:198, w:NW+40,   color:'rgba(133,79,11,0.05)'  },
+    { x:403, w:NW+30,   color:'rgba(83,74,183,0.05)'  },
+    { x:593, w:NW+30,   color:'rgba(15,110,86,0.05)'  },
+    { x:793, w:NW+40,   color:'rgba(15,110,86,0.05)'  },
   ];
-  function draw(){
-    ctx.clearRect(0,0,W,H);ctx.fillStyle=BG;ctx.fillRect(0,0,W,H);
-    COLBG.forEach(b=>rr(b.x,44,b.w,H-58,10,b.color,null));
-    ctx.textAlign='center';ctx.font='500 10px Inter,system-ui,sans-serif';
-    LLABELS.forEach(l=>{ctx.fillStyle=l.color;ctx.fillText(l.label,l.cx,30);});
-    edgePaths.forEach((ep)=>{
-      ctx.beginPath();ctx.moveTo(ep.sx,ep.sy);ctx.bezierCurveTo(ep.mx,ep.sy,ep.mx,ep.ey,ep.ex,ep.ey);
-      ctx.strokeStyle=BORDER;ctx.lineWidth=1.5;ctx.setLineDash([]);ctx.stroke();ah(ep.ex,ep.ey,BORDER);
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, W, H);
+
+    // Column background zones
+    COL_BG.forEach(b => { rrect(b.x, 44, b.w, H-58, 10, b.color, null); });
+
+    // Column labels
+    ctx.textAlign = 'center';
+    ctx.font = '500 10px Inter, system-ui, sans-serif';
+    LAYER_LABELS.forEach(l => { ctx.fillStyle = l.color; ctx.fillText(l.label, l.cx, 30); });
+
+    // Static edge lines
+    edgePaths.forEach((ep, i) => {
+      ctx.beginPath();
+      ctx.moveTo(ep.sx, ep.sy);
+      ctx.bezierCurveTo(ep.mx, ep.sy, ep.mx, ep.ey, ep.ex, ep.ey);
+      ctx.strokeStyle = BORDER;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([]);
+      ctx.stroke();
+      arrowHead(ep.ex, ep.ey, BORDER);
     });
-    particles.forEach(p=>{
-      p.t=(p.t+p.speed)%1;const ep=edgePaths[p.ei];
-      for(let i=4;i>=0;i--){
-        const tt=((p.t-i*0.02)+1)%1,pos=ptOn(ep,tt),alpha=(1-i/5)*0.4;
-        const hex=Math.round(alpha*255).toString(16).padStart(2,'0');
-        ctx.beginPath();ctx.arc(pos.x,pos.y,p.r*0.8,0,Math.PI*2);ctx.fillStyle=p.color+hex;ctx.fill();
+
+    // Animated particles
+    particles.forEach(p => {
+      p.t = (p.t + p.speed) % 1;
+      const ep = edgePaths[p.ei];
+      // Draw trailing glow
+      for (let i = 4; i >= 0; i--) {
+        const trailT = ((p.t - i * 0.02) + 1) % 1;
+        const pos = ptOnPath(ep, trailT);
+        const alpha = (1 - i/5) * 0.4;
+        const hex = Math.round(alpha * 255).toString(16).padStart(2,'0');
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, p.r * 0.8, 0, Math.PI*2);
+        ctx.fillStyle = p.color + hex;
+        ctx.fill();
       }
-      const head=ptOn(ep,p.t);ctx.beginPath();ctx.arc(head.x,head.y,p.r*0.5,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();
+      // Bright head
+      const head = ptOnPath(ep, p.t);
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, p.r * 0.5, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
     });
-    NODES.forEach(n=>{
-      rr(n.x,n.y,n.w,n.h,10,n.col.fill,n.col.stroke);
-      ctx.textAlign='center';ctx.font='600 12px Inter,system-ui,sans-serif';ctx.fillStyle=n.col.text;
-      ctx.fillText(n.label,n.x+n.w/2,n.y+n.h/2-9);
-      ctx.font='400 11px Inter,system-ui,sans-serif';ctx.fillStyle=TEXT2;
-      ctx.fillText(n.sub,n.x+n.w/2,n.y+n.h/2+9);
+
+    // Nodes
+    NODES.forEach(n => {
+      rrect(n.x, n.y, n.w, n.h, 10, n.col.fill, n.col.stroke);
+      ctx.textAlign = 'center';
+      ctx.font = '600 12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = n.col.text;
+      ctx.fillText(n.label, n.x + n.w/2, n.y + n.h/2 - 9);
+      ctx.font = '400 11px Inter, system-ui, sans-serif';
+      ctx.fillStyle = TEXT2;
+      ctx.fillText(n.sub, n.x + n.w/2, n.y + n.h/2 + 9);
     });
+
     requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
@@ -756,11 +762,8 @@ function showPage(id) {
   if (id==='forecast' && !fcastInitialised) {
     buildSkuBtns(); drawFcast(); drawTopSku(); fcastInitialised=true;
   }
-  if (id==='replenishment' && !rplInitialised) {
-    initReplenishment(); rplInitialised=true;
-  }
   if (id==='howitworks' && !howInitialised) {
-    setTimeout(initFlowChart,50); howInitialised=true;
+    setTimeout(initFlowChart, 50); howInitialised=true;
   }
 }
 
